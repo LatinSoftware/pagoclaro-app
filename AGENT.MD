@@ -14,6 +14,15 @@ El objetivo es:
 
 ---
 
+# Package manager
+
+use pnpm as package manager
+
+- pnpm add
+- pnpm install
+
+---
+
 ## 🏗 Stack
 
 - Next.js (App Router)
@@ -60,6 +69,7 @@ La seguridad real vive en backend + RLS.
 ---
 
 ## 📁 Estructura Oficial
+
 src/
 ├── app/
 ├── components/
@@ -67,7 +77,6 @@ src/
 ├── hooks/
 ├── types/
 └── middleware.ts
-
 
 ---
 
@@ -140,6 +149,7 @@ Usar:
 - No exponer lógica financiera.
 - No duplicar validaciones críticas.
 - Mantener componentes pequeños y reutilizables.
+
 ---
 
 ## 🚀 Deployment
