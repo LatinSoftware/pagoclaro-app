@@ -109,3 +109,14 @@ next-env.d.ts
 .agents/skills/vercel-react-best-practices/rules/server-parallel-fetching.md
 .agents/skills/vercel-react-best-practices/rules/server-serialization.md
 .agents/skills/web-design-guidelines/SKILL.md
+src/app/(protected)/clients/page.tsx
+api.http
+ui-design/stitch_pagoclaro_sketch.zip
+ui-design/client_directory_(v2)/code.html
+ui-design/client_directory_(v2)/screen.png
+ui-design/create_client_-_step_1_(v2)/code.html
+ui-design/create_client_-_step_1_(v2)/screen.png
+ui-design/edit_client_(v2)/code.html
+ui-design/edit_client_(v2)/screen.png
+ui-design/verify_identity_(v2)/code.html
+ui-design/verify_identity_(v2)/screen.png
