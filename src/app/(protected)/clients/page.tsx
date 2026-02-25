@@ -1,9 +1,11 @@
 import { api } from "@/lib/api";
 import { ClientListResponse, ClientFilters, ClientStatus } from "@/types/client";
-import { UserPlus } from "lucide-react";
+import { UserPlus, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ClientFilters as FilterControls } from "@/components/clients/ClientFilters";
 import { ClientTable } from "@/components/clients/ClientTable";
+import { getErrorMessage } from "@/lib/error-handler";
+import Link from "next/link";
 
 interface ClientsPageProps {
   searchParams: Promise<{
@@ -24,24 +26,15 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
     limit: params.limit ? parseInt(params.limit) : 10,
   };
 
-  let clientData: ClientListResponse = {
-    data: [],
-    meta: {
-      total: 0,
-      page: 1,
-      limit: 10,
-      totalPages: 0
-    }
-  };
+  let clientData: ClientListResponse | null = null;
+  let fetchError: string | null = null;
 
   try {
-    // We pass the filters as query parameters to the Axios request
     clientData = await api.get<ClientListResponse>("/clients", {
       params: filters
     });
   } catch (error) {
-    console.error("Failed to fetch clients:", error);
-    //TODO: In a real app, we might want to handle this with an error boundary or a toast
+    fetchError = getErrorMessage(error);
   }
 
   return (
@@ -52,25 +45,28 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
           <h1 className="text-2xl font-bold text-primary tracking-tight">Client Directory</h1>
           <p className="text-sm text-muted-foreground">Manage your relationships and track payments.</p>
         </div>
-        <Button className="rounded-lg shadow-sm">
-          <UserPlus size={18} className="mr-2" />
-          <span className="hidden sm:inline">Add Client</span>
-          <span className="sm:hidden">+</span>
-        </Button>
+        <Link href="/clients/new">
+          <Button className="rounded-lg shadow-sm">
+            <UserPlus size={18} className="mr-2" />
+            <span className="hidden sm:inline">Add Client</span>
+            <span className="sm:hidden">+</span>
+          </Button>
+        </Link>
       </header>
 
       {/* Search & Filter Bar */}
       <FilterControls />
 
-      {/* Client List */}
-      <ClientTable clients={clientData.data} />
+      {/* Error State */}
+      {fetchError && (
+        <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg flex items-center gap-3 text-destructive">
+          <AlertCircle size={20} />
+          <p className="text-sm font-medium">{fetchError}</p>
+        </div>
+      )}
 
-      {/* FAB for Mobile (Optional, since we have the top button) */}
-      <div className="fixed bottom-24 right-6 lg:hidden">
-        <Button size="icon" className="size-14 rounded-full shadow-lg">
-          <UserPlus size={24} />
-        </Button>
-      </div>
+      {/* Client List */}
+      <ClientTable clients={clientData?.data || []} />
     </div>
   );
 }
