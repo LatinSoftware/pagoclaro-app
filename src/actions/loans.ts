@@ -2,7 +2,7 @@
 
 import { api } from "@/lib/api";
 import { handleApiError } from "@/lib/error-handler";
-import { LoanResponse, LoanRequest } from "@/types/loan";
+import { LoanResponse, LoanRequest, LoanDetailResponse } from "@/types/loan";
 
 export async function getLoans(
   params: LoanRequest,
@@ -12,5 +12,16 @@ export async function getLoans(
     return { success: true, data };
   } catch (error: unknown) {
     return handleApiError(error, "getLoans");
+  }
+}
+
+export async function getLoanById(
+  id: string,
+): Promise<{ success: boolean; data?: LoanDetailResponse; error?: string }> {
+  try {
+    const data = await api.get<LoanDetailResponse>(`/loans/${id}`);
+    return { success: true, data };
+  } catch (error: unknown) {
+    return handleApiError(error, "getLoanById");
   }
 }

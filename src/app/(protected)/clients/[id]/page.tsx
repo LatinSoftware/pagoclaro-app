@@ -34,7 +34,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   // Render using a responsive web layout
   return (
     <div className="w-full bg-white dark:bg-background">
-      <div className="mx-auto max-w-5xl w-full flex flex-col">
+      <div className="mx-auto w-full flex flex-col">
         <ClientProfileHeader client={client} />
         <ClientTabs 
           client={client} 

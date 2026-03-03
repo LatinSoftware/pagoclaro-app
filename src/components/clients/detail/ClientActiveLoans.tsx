@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import { Calendar, CreditCard, ChevronRight, Activity, CalendarDays } from "lucide-react";
 import { Status } from "@/types/loan";
+import Link from "next/link";
 
 interface ClientActiveLoansProps {
   clientId: string;
@@ -138,10 +139,12 @@ export async function ClientActiveLoans({ clientId }: ClientActiveLoansProps) {
             </CardContent>
             
             <CardFooter className="pt-2 pb-6 px-6">
-              <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-primary dark:text-background font-bold uppercase tracking-widest h-12 rounded-xl transition-all group-hover:scale-[1.02] shadow-sm">
-                View Details
-                <ChevronRight className="ml-2 h-4 w-4" />
-              </Button>
+              <Link href={`/loans/${loan.id}`} className="w-full">
+                <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-primary dark:text-background font-bold uppercase tracking-widest h-12 rounded-xl transition-all group-hover:scale-[1.02] shadow-sm">
+                  View Details
+                  <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
             </CardFooter>
           </Card>
         ))}
@@ -149,3 +152,4 @@ export async function ClientActiveLoans({ clientId }: ClientActiveLoansProps) {
     </div>
   );
 }
+

@@ -21,7 +21,7 @@ export default async function ProtectedLayout({
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
         <div className="flex h-16 items-center">
           {/* Logo Area - Aligned with Sidebar */}
           <div className="lg:w-64 flex items-center gap-2 px-4 border-r lg:border-r-0 lg:h-full">
@@ -57,13 +57,13 @@ export default async function ProtectedLayout({
             <NavItem href="/settings" icon={<Settings size={20} />} label="Settings" />
          </aside>
 
-        <div className="container max-w-7xl mx-auto px-4 py-6 md:px-6 lg:px-8">
+        <div className="container max-w-10xl mx-auto px-4 py-6 md:px-6 lg:px-8">
           {children}
         </div>
       </main>
 
       {/* Bottom Navigation for Mobile */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden flex h-16 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 items-center justify-around px-2">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden flex h-16 border-t bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 items-center justify-around px-2">
         <MobileNavItem href="/dashboard" icon={<LayoutDashboard size={24} />} label="Dashboard" />
         <MobileNavItem href="/clients" icon={<Users size={24} />} label="Clients" />
         <MobileNavItem href="/payments" icon={<CreditCard size={24} />} label="Payments" />

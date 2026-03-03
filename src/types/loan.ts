@@ -1,17 +1,20 @@
 export interface LoanRequest {
   client_id?: string;
-  date_from?: Date;
-  date_to?: Date;
+  date_from?: string;
+  date_to?: string;
   limit?: string;
   page?: string;
   status?: string;
-  [property: string]: unknown;
 }
 
 export interface LoanResponse {
   data: Loan[];
   meta: PaginationMeta;
-  [property: string]: unknown;
+}
+
+export interface LoanDetailResponse extends Loan {
+  client: Client;
+  installments: LoanInstallment[];
 }
 
 export interface Loan {
@@ -36,7 +39,20 @@ export interface Loan {
   total_paid: number;
   updated_at: string;
   updated_by?: string;
-  [property: string]: unknown;
+}
+
+export interface Client {
+  address?: string;
+  cedula?: string;
+  id: string;
+  name: string;
+  phone: string;
+  status: ClientStatus;
+}
+
+export enum ClientStatus {
+  Active = "active",
+  Inactive = "inactive",
 }
 
 export enum Frequency {
@@ -44,6 +60,29 @@ export enum Frequency {
   Daily = "daily",
   Monthly = "monthly",
   Weekly = "weekly",
+}
+
+export interface LoanInstallment {
+  amount_paid: number;
+  capital_amount: number;
+  created_at: string;
+  due_date: string;
+  id: string;
+  installment_number: number;
+  interest_amount: number;
+  loan_id: string;
+  paid_at?: string | null;
+  status: InstallmentStatus;
+  tenant_id: string;
+  total_due: number;
+  updated_at: string;
+}
+
+export enum InstallmentStatus {
+  Overdue = "overdue",
+  Paid = "paid",
+  Partial = "partial",
+  Pending = "pending",
 }
 
 export enum Method {
@@ -65,5 +104,4 @@ export interface PaginationMeta {
   page: number;
   total: number;
   totalPages: number;
-  [property: string]: unknown;
 }
