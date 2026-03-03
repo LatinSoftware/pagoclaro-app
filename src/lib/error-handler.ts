@@ -5,8 +5,6 @@ import axios from "axios";
  * specifically handling Axios errors from the backend.
  */
 export function getErrorMessage(error: unknown): string {
-  console.error("Error detected:", error);
-
   if (axios.isAxiosError(error)) {
     // Check if the backend provided a specific message
     const backendMessage = error.response?.data?.message;
@@ -30,4 +28,27 @@ export function getErrorMessage(error: unknown): string {
   }
 
   return "An unexpected error occurred. Please try again.";
+}
+
+/**
+ * Standardized error handler for Server Actions.
+ * Returns a consistent object structure and handles common API status codes.
+ */
+export function handleApiError(error: unknown, context?: string) {
+  if (context) {
+    console.error(`Error in ${context}:`, error);
+  } else {
+    console.error("API Error:", error);
+  }
+
+  let status: number | undefined;
+  if (axios.isAxiosError(error)) {
+    status = error.response?.status;
+  }
+
+  // Return specific indicator for 404 so pages can call notFound()
+  return {
+    success: false,
+    error: status === 404 ? "404" : getErrorMessage(error),
+  };
 }

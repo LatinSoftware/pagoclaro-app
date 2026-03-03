@@ -2,17 +2,17 @@
 
 import { useState } from "react";
 import { ClientProfile } from "@/types/client";
-import { ClientBasicInfo } from "./ClientBasicInfo";
-import { ClientActiveLoans } from "./ClientActiveLoans";
-import { ClientTimeline } from "./ClientTimeline";
 
 interface ClientTabsProps {
   client: ClientProfile;
+  infoContent: React.ReactNode;
+  loansContent: React.ReactNode;
+  historyContent: React.ReactNode;
 }
 
 type TabKey = "info" | "loans" | "history" | "receipts";
 
-export function ClientTabs({ client }: ClientTabsProps) {
+export function ClientTabs({ infoContent, loansContent, historyContent }: ClientTabsProps) {
   const [activeTab, setActiveTab] = useState<TabKey>("info");
 
   const tabs: { key: TabKey; label: string }[] = [
@@ -35,7 +35,7 @@ export function ClientTabs({ client }: ClientTabsProps) {
                 className={`flex flex-col items-center justify-center pb-3 pt-4 flex-1 transition-all border-b-2 outline-none ${
                   isActive
                     ? "border-primary text-primary"
-                    : "border-transparent text-zinc-500 hover:text-black"
+                    : "border-transparent text-zinc-500 hover:text-black dark:hover:text-white"
                 }`}
               >
                 <p className="text-xs font-bold uppercase tracking-widest">{tab.label}</p>
@@ -46,9 +46,9 @@ export function ClientTabs({ client }: ClientTabsProps) {
       </div>
 
       <div className="p-6 md:p-10 lg:p-12">
-        {activeTab === "info" && <ClientBasicInfo client={client} />}
-        {activeTab === "loans" && <ClientActiveLoans loans={client.loans} />}
-        {activeTab === "history" && <ClientTimeline events={client.events} />}
+        {activeTab === "info" && infoContent}
+        {activeTab === "loans" && loansContent}
+        {activeTab === "history" && historyContent}
         {activeTab === "receipts" && (
           <div className="flex flex-col items-center justify-center p-10 text-zinc-500">
             <p className="font-semibold">No receipts available yet.</p>

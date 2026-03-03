@@ -1,7 +1,10 @@
-import { getClientProfile } from "@/actions/clients";
+import { getClientDetail } from "@/actions/clients";
 import { notFound } from "next/navigation";
 import { ClientProfileHeader } from "@/components/clients/detail/ClientProfileHeader";
 import { ClientTabs } from "@/components/clients/detail/ClientTabs";
+import { ClientBasicInfo } from "@/components/clients/detail/ClientBasicInfo";
+import { ClientActiveLoans } from "@/components/clients/detail/ClientActiveLoans";
+import { ClientTimeline } from "@/components/clients/detail/ClientTimeline";
 
 interface ClientDetailPageProps {
   params: Promise<{
@@ -11,7 +14,7 @@ interface ClientDetailPageProps {
 
 export default async function ClientDetailPage({ params }: ClientDetailPageProps) {
   const resolvedParams = await params;
-  const result = await getClientProfile(resolvedParams.id);
+  const result = await getClientDetail(resolvedParams.id);
 
   if (!result.success || !result.data) {
     if (result.error?.includes("404")) {
@@ -33,7 +36,12 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
     <div className="w-full bg-white dark:bg-background">
       <div className="mx-auto max-w-5xl w-full flex flex-col">
         <ClientProfileHeader client={client} />
-        <ClientTabs client={client} />
+        <ClientTabs 
+          client={client} 
+          infoContent={<ClientBasicInfo client={client} />}
+          loansContent={<ClientActiveLoans clientId={client.id} />}
+          historyContent={<ClientTimeline events={client.events} />}
+        />
       </div>
     </div>
   );

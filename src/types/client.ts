@@ -25,15 +25,6 @@ export interface Client {
 
 export type FinancialStatus = "AL_DIA" | "PARCIAL" | "EN_MORA";
 
-export interface Loan {
-  id: string;
-  initialCapital: number;
-  currentBalance: number;
-  status: "ACTIVE" | "PAID" | "DEFAULT";
-  nextInstallmentDate?: string;
-  nextInstallmentAmount?: number;
-}
-
 export interface ClientTimelineEvent {
   id: string;
   type: "PAYMENT" | "LOAN_CREATED" | "LATE_PAYMENT" | "OTHER";
@@ -46,7 +37,7 @@ export interface ClientProfile extends Client {
   pendingBalance: number;
   nextInstallmentDate?: string;
   nextInstallmentAmount?: number;
-  loans: Loan[];
+
   events: ClientTimelineEvent[];
   riskScore?: "Low" | "Medium" | "High";
   punctuality?: number;

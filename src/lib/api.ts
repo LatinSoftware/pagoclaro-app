@@ -1,5 +1,4 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
-import { createClient } from "@/lib/supabase/server";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
@@ -21,6 +20,7 @@ class ApiService {
       // Check if we are on server or client
       if (typeof window === "undefined") {
         // Server side
+        const { createClient } = await import("@/lib/supabase/server");
         const supabase = await createClient();
         const {
           data: { session },
@@ -28,10 +28,12 @@ class ApiService {
         token = session?.access_token;
       } else {
         // Client side
-        // We'll use the supabase-js client if possible, or cookies
-        // But for now, let's stick to the server-side first preference
-        // and if it's called from a Client Component, it might need another approach
-        // if not passing token explicitly.
+        const { createClient } = await import("@/lib/supabase/client");
+        const supabase = createClient();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        token = session?.access_token;
       }
 
       if (token) {
