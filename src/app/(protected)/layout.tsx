@@ -32,7 +32,7 @@ export default async function ProtectedLayout({
           </div>
 
           {/* Header content aligned with main container */}
-          <div className="flex-1 flex items-center mx-auto justify-between px-4 md:px-6 lg:px-8 max-w-7xl">
+          <div className="flex-1 flex items-center mx-auto justify-between px-4 md:px-6 lg:px-8 max-w-10xl">
             <div /> {/* Spacer or Breadcrumbs could go here */}
             <div className="flex items-center gap-4">
               <ThemeToggle />
