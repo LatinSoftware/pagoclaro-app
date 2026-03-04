@@ -102,7 +102,7 @@ export default async function LoanDetailPage({ params }: LoanDetailPageProps) {
         </div>
       </div>
 
-      <div className="container mx-auto p-4 md:p-8 max-w-7xl space-y-8">
+      <div className="container mx-auto p-4 md:p-8 space-y-8">
         {/* Main Stats Summary */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
           <Card className="relative overflow-hidden border-zinc-200 dark:border-zinc-800 shadow-xl bg-linear-to-br from-card to-zinc-50/50 dark:to-zinc-900/50 group">
@@ -163,7 +163,7 @@ export default async function LoanDetailPage({ params }: LoanDetailPageProps) {
                 </div>
               </CardHeader>
               <CardContent className="pt-6 space-y-6">
-                <div className="flex items-start gap-4">
+                <div className="flex items-center gap-4">
                   <div className="h-12 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center shrink-0 uppercase font-black text-zinc-400">
                     {loan.client.name.charAt(0)}
                   </div>

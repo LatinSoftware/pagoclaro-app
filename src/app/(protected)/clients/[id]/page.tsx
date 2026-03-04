@@ -1,6 +1,6 @@
 import { getClientDetail } from "@/actions/clients";
 import { notFound } from "next/navigation";
-import { ClientProfileHeader } from "@/components/clients/detail/ClientProfileHeader";
+import { ClientHeader } from "@/components/clients/detail/ClientHeader";
 import { ClientTabs } from "@/components/clients/detail/ClientTabs";
 import { ClientBasicInfo } from "@/components/clients/detail/ClientBasicInfo";
 import { ClientActiveLoans } from "@/components/clients/detail/ClientActiveLoans";
@@ -35,7 +35,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   return (
     <div className="w-full bg-white dark:bg-background">
       <div className="mx-auto w-full flex flex-col">
-        <ClientProfileHeader client={client} />
+        <ClientHeader client={client} />
         <ClientTabs 
           client={client} 
           infoContent={<ClientBasicInfo client={client} />}
