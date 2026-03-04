@@ -4,8 +4,11 @@ import { api } from "@/lib/api";
 import { revalidatePath } from "next/cache";
 import { handleApiError } from "@/lib/error-handler";
 import { ClientProfile } from "@/types/client";
+import { cache } from "react";
 
-export async function createClientAction(formData: FormData) {
+export async function createClientAction(
+  formData: FormData,
+): Promise<{ success: boolean; error?: string }> {
   try {
     // The api service handles the token when called from the server
     await api.post("/clients", formData, {
@@ -20,8 +23,6 @@ export async function createClientAction(formData: FormData) {
     return handleApiError(error, "createClientAction");
   }
 }
-
-import { cache } from "react";
 
 export const getClientDetail = cache(
   async (

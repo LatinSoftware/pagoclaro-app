@@ -25,6 +25,8 @@ import {
 import Link from "next/link";
 import { Status, InstallmentStatus } from "@/types/loan";
 import { cn } from "@/lib/utils";
+import { DisburseLoanButton } from "@/components/loans/DisburseLoanButton";
+import { formatDate } from "@/lib/utils/loan-helpers";
 
 interface LoanDetailPageProps {
   params: Promise<{ id: string }>;
@@ -43,12 +45,7 @@ export default async function LoanDetailPage({ params }: LoanDetailPageProps) {
   const formatMoney = (amount: number) =>
     new Intl.NumberFormat("es-DO", { style: "currency", currency: "DOP" }).format(amount);
 
-  const formatDate = (date: string | Date) =>
-    new Date(date).toLocaleDateString("es-DO", { 
-      day: '2-digit', 
-      month: 'short', 
-      year: 'numeric' 
-    });
+ 
 
   const getStatusConfig = (status: Status) => {
     switch (status) {
@@ -96,9 +93,14 @@ export default async function LoanDetailPage({ params }: LoanDetailPageProps) {
             <p className="text-xs text-muted-foreground font-mono uppercase">ID: {loan.id.toUpperCase()}</p>
           </div>
         </div>
-        <div className={cn("px-3 py-1 rounded-full border text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-sm", statusConfig.className)}>
-          <StatusIcon className="h-3.5 w-3.5" />
-          {statusConfig.label}
+        <div className="flex items-center gap-3">
+          {loan.status === Status.Draft && (
+            <DisburseLoanButton loanId={loan.id} />
+          )}
+          <div className={cn("px-3 py-1 rounded-full border text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-sm h-8", statusConfig.className)}>
+            <StatusIcon className="h-3.5 w-3.5" />
+            {statusConfig.label}
+          </div>
         </div>
       </div>
 

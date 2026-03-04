@@ -18,16 +18,15 @@ export interface LoanDetailResponse extends Loan {
 }
 
 export interface Loan {
+  id: string;
   capital: number;
   client_id: string;
+  client: Client;
   created_at: string;
   created_by?: string;
   deleted_at?: string | null;
-  disbursed_at?: string | null;
-  disbursed_by?: null | string;
   disbursement_date: string;
   frequency: Frequency;
-  id: string;
   interest_rate: number;
   method: Method;
   notes?: null | string;
@@ -39,6 +38,8 @@ export interface Loan {
   total_paid: number;
   updated_at: string;
   updated_by?: string;
+  disbursed_at?: string;
+  disbursed_by?: string;
 }
 
 export interface Client {

@@ -25,3 +25,16 @@ export async function getLoanById(
     return handleApiError(error, "getLoanById");
   }
 }
+
+export async function disburseLoanAction(
+  id: string,
+): Promise<{ success: boolean; data?: LoanDetailResponse; error?: string }> {
+  try {
+    const data = await api.patch<LoanDetailResponse, unknown>(
+      `/loans/${id}/disburse`,
+    );
+    return { success: true, data };
+  } catch (error: unknown) {
+    return handleApiError(error, "disburseLoanAction");
+  }
+}

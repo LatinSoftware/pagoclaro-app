@@ -1,10 +1,18 @@
 import axios from "axios";
 
+interface ErrorMessage {
+  error: string;
+  statusCode: number;
+}
+interface ApiError extends ErrorMessage {
+  success: false;
+}
+
 /**
  * Extracts a user-friendly error message from an error object,
  * specifically handling Axios errors from the backend.
  */
-export function getErrorMessage(error: unknown): string {
+export function getErrorMessage(error: unknown): ErrorMessage {
   if (axios.isAxiosError(error)) {
     // Check if the backend provided a specific message
     const backendMessage = error.response?.data?.message;
@@ -12,43 +20,64 @@ export function getErrorMessage(error: unknown): string {
 
     // Check for common HTTP status codes
     if (error.response?.status === 401)
-      return "Session expired. Please login again.";
+      return {
+        error: "Session expired. Please login again.",
+        statusCode: 401,
+      };
     if (error.response?.status === 403)
-      return "You don't have permission to perform this action.";
+      return {
+        error: "You don't have permission to perform this action.",
+        statusCode: 403,
+      };
     if (error.response?.status === 404)
-      return "The requested resource was not found.";
+      return {
+        error: "The requested resource was not found.",
+        statusCode: 404,
+      };
     if (error.response?.status === 500)
-      return "Global server error. Please try again later.";
+      return {
+        error: "Global server error. Please try again later.",
+        statusCode: 500,
+      };
+    if (error.response?.status === 404)
+      return {
+        error: "The requested resource was not found.",
+        statusCode: 404,
+      };
 
-    return error.message || "An unexpected network error occurred.";
+    return {
+      error: error.message || "An unexpected network error occurred.",
+      statusCode: error.response?.status || 500,
+    };
   }
 
   if (error instanceof Error) {
-    return error.message;
+    return {
+      error: error.message,
+      statusCode: 500,
+    };
   }
 
-  return "An unexpected error occurred. Please try again.";
+  return {
+    error: "An unexpected error occurred. Please try again.",
+    statusCode: 500,
+  };
 }
 
 /**
  * Standardized error handler for Server Actions.
  * Returns a consistent object structure and handles common API status codes.
  */
-export function handleApiError(error: unknown, context?: string) {
+export function handleApiError(error: unknown, context?: string): ApiError {
   if (context) {
     console.error(`Error in ${context}:`, error);
   } else {
     console.error("API Error:", error);
   }
 
-  let status: number | undefined;
-  if (axios.isAxiosError(error)) {
-    status = error.response?.status;
-  }
-
-  // Return specific indicator for 404 so pages can call notFound()
   return {
     success: false,
-    error: status === 404 ? "404" : getErrorMessage(error),
+    error: getErrorMessage(error),
+    statusCode: error.response?.status,
   };
 }

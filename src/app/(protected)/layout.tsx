@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { LayoutDashboard, Users, CreditCard, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, CreditCard, Settings, LogOut, Briefcase } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { logout } from "@/app/auth/actions";
@@ -53,6 +53,7 @@ export default async function ProtectedLayout({
          <aside className="hidden lg:flex fixed left-0 top-16 bottom-0 w-64 border-r bg-card/50 flex-col py-6 px-4 space-y-2">
             <NavItem href="/dashboard" icon={<LayoutDashboard size={20} />} label="Dashboard" />
             <NavItem href="/clients" icon={<Users size={20} />} label="Clients" />
+            <NavItem href="/loans" icon={<Briefcase size={20} />} label="Loans" />
             <NavItem href="/payments" icon={<CreditCard size={20} />} label="Payments" />
             <NavItem href="/settings" icon={<Settings size={20} />} label="Settings" />
          </aside>
@@ -66,6 +67,7 @@ export default async function ProtectedLayout({
       <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden flex h-16 border-t bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 items-center justify-around px-2">
         <MobileNavItem href="/dashboard" icon={<LayoutDashboard size={24} />} label="Dashboard" />
         <MobileNavItem href="/clients" icon={<Users size={24} />} label="Clients" />
+        <MobileNavItem href="/loans" icon={<Briefcase size={24} />} label="Loans" />
         <MobileNavItem href="/payments" icon={<CreditCard size={24} />} label="Payments" />
         <MobileNavItem href="/settings" icon={<Settings size={24} />} label="Settings" />
       </nav>

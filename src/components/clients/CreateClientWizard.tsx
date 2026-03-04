@@ -85,7 +85,8 @@ export default function CreateClientWizard() {
             router.push("/clients");
             router.refresh();
         } else {
-            setSubmitError(result.error || "An error occurred");
+            //setSubmitError('error' in result ? (result as unknown as { error: string }).error : "An error occurred");
+            setSubmitError(result.error ?? "An error occurred");
         }
 
    
