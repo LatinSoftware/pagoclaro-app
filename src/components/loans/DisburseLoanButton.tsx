@@ -30,8 +30,6 @@ export function DisburseLoanButton({ loanId }: DisburseLoanButtonProps) {
       toast.error(result.error || "Failed to disburse loan");
     }
 
-    toast.error("An unexpected error occurred");
-
     setIsLoading(false);
   };
 
