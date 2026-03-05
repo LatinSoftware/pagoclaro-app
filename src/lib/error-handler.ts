@@ -16,7 +16,12 @@ export function getErrorMessage(error: unknown): ErrorMessage {
   if (axios.isAxiosError(error)) {
     // Check if the backend provided a specific message
     const backendMessage = error.response?.data?.message;
-    if (backendMessage) return backendMessage;
+    if (backendMessage) {
+      return {
+        error: backendMessage,
+        statusCode: error.response?.status || 400,
+      };
+    }
 
     // Check for common HTTP status codes
     if (error.response?.status === 401)
@@ -64,10 +69,6 @@ export function getErrorMessage(error: unknown): ErrorMessage {
   };
 }
 
-/**
- * Standardized error handler for Server Actions.
- * Returns a consistent object structure and handles common API status codes.
- */
 export function handleApiError(error: unknown, context?: string): ApiError {
   if (context) {
     console.error(`Error in ${context}:`, error);
@@ -75,9 +76,11 @@ export function handleApiError(error: unknown, context?: string): ApiError {
     console.error("API Error:", error);
   }
 
+  const errMessage = getErrorMessage(error);
+
   return {
     success: false,
-    error: getErrorMessage(error),
-    statusCode: error.response?.status,
+    error: errMessage.error,
+    statusCode: errMessage.statusCode,
   };
 }
