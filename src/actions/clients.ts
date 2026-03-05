@@ -66,3 +66,27 @@ export async function updateClientBasicInfoAction(
     return handleApiError(error, `updateClientBasicInfoAction ${id}`);
   }
 }
+
+export async function getClientsListAction(params: {
+  search?: string;
+  page?: number;
+  limit?: number;
+  status?: "active" | "inactive";
+}): Promise<{
+  success: boolean;
+  data?: {
+    data: ClientProfile[];
+    meta: { total: number; page: number; limit: number; totalPages: number };
+  };
+  error?: string;
+}> {
+  try {
+    const data = await api.get<{
+      data: ClientProfile[];
+      meta: { total: number; page: number; limit: number; totalPages: number };
+    }>("/clients", { params });
+    return { success: true, data };
+  } catch (error: unknown) {
+    return handleApiError(error, "getClientsListAction");
+  }
+}

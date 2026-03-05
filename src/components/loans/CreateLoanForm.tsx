@@ -28,6 +28,7 @@ import {
 } from "@/lib/schemas/create-loan";
 import { createLoanAction } from "@/actions/loans";
 import { FREQUENCY_LABELS, METHOD_LABELS } from "@/lib/utils/loan-helpers";
+import { ClientCombobox } from "@/components/loans/ClientCombobox";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -129,24 +130,25 @@ export function CreateLoanForm() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             {/* ── Client & Capital ── */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
               <FormField
                 control={form.control}
                 name="client_id"
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem>
                     <FormLabel className="flex items-center gap-1.5">
                       <User className="size-3.5 text-muted-foreground" />
-                      Client ID
+                      Client
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="e.g. 550e8400-e29b-41d4-a716-446655440000"
-                        {...field}
+                      <ClientCombobox
+                        value={field.value}
+                        onChange={field.onChange}
+                        error={fieldState.error?.message}
                       />
                     </FormControl>
                     <FormDescription>
-                      UUID of the client receiving this loan.
+                      Search and select the client receiving this loan.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -191,7 +193,7 @@ export function CreateLoanForm() {
             </div>
 
             {/* ── Rate & Term ── */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
               <FormField
                 control={form.control}
                 name="interest_rate"
@@ -267,7 +269,7 @@ export function CreateLoanForm() {
             </div>
 
             {/* ── Frequency & Method ── */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
               <FormField
                 control={form.control}
                 name="frequency"
@@ -336,7 +338,7 @@ export function CreateLoanForm() {
             </div>
 
             {/* ── Date & Notes ── */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
               <FormField
                 control={form.control}
                 name="disbursement_date"
@@ -357,7 +359,7 @@ export function CreateLoanForm() {
                             )}
                           >
                             {field.value ? (
-                              format(new Date(field.value), "PPP")
+                              format(new Date(field.value + "T12:00:00"), "PPP")
                             ) : (
                               <span>Pick a date</span>
                             )}
