@@ -106,3 +106,40 @@ export interface PaginationMeta {
   total: number;
   totalPages: number;
 }
+
+/** Request body for POST /loans */
+export interface CreateLoanRequest {
+  capital: number;
+  client_id: string;
+  disbursement_date: string;
+  frequency: Frequency;
+  interest_rate: number; // decimal (0.05 = 5%)
+  method: Method;
+  notes?: string;
+  term: number;
+}
+
+/** Response from POST /loans */
+export interface CreateLoanResponse {
+  id: string;
+  capital: number;
+  client_id: string;
+  created_at: string;
+  created_by?: string;
+  deleted_at?: string | null;
+  disbursed_at?: string | null;
+  disbursed_by?: string | null;
+  disbursement_date: string;
+  frequency: Frequency;
+  interest_rate: number;
+  method: Method;
+  notes?: string | null;
+  outstanding_balance: number;
+  status: Status;
+  tenant_id: string;
+  term: number;
+  total_amount: number;
+  total_paid: number;
+  updated_at: string;
+  updated_by?: string;
+}
