@@ -8,13 +8,19 @@ import { toast } from "sonner";
 import {
   DollarSign,
   Percent,
-  Calendar,
+  CalendarIcon,
   Hash,
   User,
   FileText,
   Loader2,
   AlertCircle,
+  Activity,
+  Calculator,
+  MessageSquare,
 } from "lucide-react";
+
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 import {
   createLoanSchema,
@@ -25,6 +31,20 @@ import { FREQUENCY_LABELS, METHOD_LABELS } from "@/lib/utils/loan-helpers";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Card,
   CardContent,
@@ -161,6 +181,9 @@ export function CreateLoanForm() {
                         }
                       />
                     </FormControl>
+                    <FormDescription>
+                      The total amount of money to be lent.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -234,6 +257,9 @@ export function CreateLoanForm() {
                         }
                       />
                     </FormControl>
+                    <FormDescription>
+                      Total number of payments for this loan.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -247,24 +273,28 @@ export function CreateLoanForm() {
                 name="frequency"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Payment Frequency</FormLabel>
+                    <FormLabel className="flex items-center gap-1.5">
+                      <Activity className="size-3.5 text-muted-foreground" />
+                      Payment Frequency
+                    </FormLabel>
                     <FormControl>
-                      <select
-                        className="flex h-12 w-full rounded-lg border border-input bg-transparent px-4 py-1 text-base shadow-sm transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-                        {...field}
-                        value={field.value ?? ""}
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
                       >
-                        <option value="" disabled>
-                          Select frequency…
-                        </option>
-                        {Object.entries(FREQUENCY_LABELS).map(
-                          ([value, label]) => (
-                            <option key={value} value={value}>
-                              {label}
-                            </option>
-                          ),
-                        )}
-                      </select>
+                        <SelectTrigger className="w-full h-12 shadow-sm rounded-lg border-input">
+                          <SelectValue placeholder="Select frequency…" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Object.entries(FREQUENCY_LABELS).map(
+                            ([value, label]) => (
+                              <SelectItem key={value} value={value}>
+                                {label}
+                              </SelectItem>
+                            ),
+                          )}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -276,22 +306,28 @@ export function CreateLoanForm() {
                 name="method"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Calculation Method</FormLabel>
+                    <FormLabel className="flex items-center gap-1.5">
+                      <Calculator className="size-3.5 text-muted-foreground" />
+                      Calculation Method
+                    </FormLabel>
                     <FormControl>
-                      <select
-                        className="flex h-12 w-full rounded-lg border border-input bg-transparent px-4 py-1 text-base shadow-sm transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-                        {...field}
-                        value={field.value ?? ""}
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
                       >
-                        <option value="" disabled>
-                          Select method…
-                        </option>
-                        {Object.entries(METHOD_LABELS).map(([value, label]) => (
-                          <option key={value} value={value}>
-                            {label}
-                          </option>
-                        ))}
-                      </select>
+                        <SelectTrigger className="w-full h-12 shadow-sm rounded-lg border-input">
+                          <SelectValue placeholder="Select method…" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Object.entries(METHOD_LABELS).map(
+                            ([value, label]) => (
+                              <SelectItem key={value} value={value}>
+                                {label}
+                              </SelectItem>
+                            ),
+                          )}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -307,35 +343,83 @@ export function CreateLoanForm() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="flex items-center gap-1.5">
-                      <Calendar className="size-3.5 text-muted-foreground" />
+                      <CalendarIcon className="size-3.5 text-muted-foreground" />
                       Disbursement Date
                     </FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="notes"
-                render={({ field }) => (
-                  <FormItem className="md:col-span-1">
-                    <FormLabel>Notes (optional)</FormLabel>
-                    <FormControl>
-                      <textarea
-                        className="flex min-h-[80px] w-full rounded-lg border border-input bg-transparent px-4 py-3 text-base shadow-sm transition-all placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 md:text-sm resize-none"
-                        placeholder="Add any additional notes about this loan…"
-                        {...field}
-                      />
-                    </FormControl>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-full pl-3 text-left font-normal border-input h-12 shadow-sm rounded-lg",
+                              !field.value && "text-muted-foreground",
+                            )}
+                          >
+                            {field.value ? (
+                              format(new Date(field.value), "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={
+                            field.value
+                              ? new Date(field.value + "T12:00:00")
+                              : undefined
+                          }
+                          onSelect={(date) => {
+                            if (date) {
+                              const yyyy = date.getFullYear();
+                              const mm = String(date.getMonth() + 1).padStart(
+                                2,
+                                "0",
+                              );
+                              const dd = String(date.getDate()).padStart(
+                                2,
+                                "0",
+                              );
+                              field.onChange(`${yyyy}-${mm}-${dd}`);
+                            } else {
+                              field.onChange("");
+                            }
+                          }}
+                          disabled={(date) => date < new Date("1900-01-01")}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
+
+            <FormField
+              control={form.control}
+              name="notes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-1.5">
+                    <MessageSquare className="size-3.5 text-muted-foreground" />
+                    Notes (optional)
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Add any additional notes about this loan…"
+                      className="min-h-[100px] resize-none shadow-sm rounded-lg"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             {/* ── Actions ── */}
             <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4 border-t border-border">

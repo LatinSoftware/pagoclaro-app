@@ -1,5 +1,5 @@
 import { Status, LoanRequest } from "@/types/loan";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LoanFilters } from "@/components/loans/LoanFilters";
 import { LoanList } from "@/components/loans/LoanList";
@@ -48,9 +48,9 @@ export default async function LoansPage({ searchParams }: LoansPageProps) {
           </p>
         </div>
         <Link href="/loans/new">
-          <Button className="rounded-lg shadow-sm">
+          <Button className="rounded-lg shadow-sm gap-2">
+            <Plus className="size-4" />
             <span className="hidden sm:inline">New Loan</span>
-            <span className="sm:hidden">+</span>
           </Button>
         </Link>
       </header>
