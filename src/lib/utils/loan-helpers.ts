@@ -1,11 +1,14 @@
 import { Loan, Frequency, Method } from "@/types/loan";
 
 export function formatCurrency(amount: number) {
-  return amount.toLocaleString("en-US", {
-    style: "currency",
-    currency: "DOP",
-    minimumFractionDigits: 2,
-  });
+  return amount
+    .toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 2,
+    })
+    .replace("USD", "")
+    .trim();
 }
 
 export function formatDate(dateStr: string | Date) {

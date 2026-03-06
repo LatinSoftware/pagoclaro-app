@@ -71,17 +71,17 @@ export function RegisterPaymentDialog({ loanId }: RegisterPaymentDialogProps) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="w-full sm:w-auto font-bold tracking-widest uppercase shadow-xl transition-all hover:scale-105 active:scale-95 bg-primary text-primary-foreground">
+          <Button className="w-full sm:w-auto shadow-sm">
             <CreditCard className="mr-2 h-4 w-4" />
             Register Payment
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold uppercase tracking-tight">
+            <DialogTitle className="text-xl font-semibold">
               Register Payment
             </DialogTitle>
-            <DialogDescription className="text-xs uppercase font-bold tracking-widest text-muted-foreground">
+            <DialogDescription className="text-sm text-muted-foreground">
               Apply a new payment to this loan.
             </DialogDescription>
           </DialogHeader>
@@ -94,17 +94,17 @@ export function RegisterPaymentDialog({ loanId }: RegisterPaymentDialogProps) {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button className="w-full sm:w-auto font-bold tracking-widest uppercase shadow-xl transition-all hover:scale-105 active:scale-95 bg-primary text-primary-foreground">
+        <Button className="w-full sm:w-auto shadow-sm">
           <CreditCard className="mr-2 h-4 w-4" />
           Register Payment
         </Button>
       </DrawerTrigger>
       <DrawerContent className="mx-auto w-full max-w-lg">
         <DrawerHeader className="text-left">
-          <DrawerTitle className="text-xl font-bold uppercase tracking-tight">
+          <DrawerTitle className="text-xl font-semibold">
             Register Payment
           </DrawerTitle>
-          <DrawerDescription className="text-xs uppercase font-bold tracking-widest text-muted-foreground">
+          <DrawerDescription className="text-sm text-muted-foreground">
             Apply a new payment to this loan.
           </DrawerDescription>
         </DrawerHeader>
@@ -177,9 +177,7 @@ function PaymentForm({
             name="amount"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs font-bold uppercase tracking-widest text-zinc-500">
-                  Amount
-                </FormLabel>
+                <FormLabel>Amount</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-muted-foreground">
@@ -196,7 +194,7 @@ function PaymentForm({
                         )
                       }
                       disabled={isPending}
-                      className="pl-7 font-mono font-bold text-lg"
+                      className="pl-7 font-medium"
                     />
                   </div>
                 </FormControl>
@@ -211,9 +209,7 @@ function PaymentForm({
               name="payment_method"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-xs font-bold uppercase tracking-widest text-zinc-500">
-                    Method
-                  </FormLabel>
+                  <FormLabel>Method</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -255,9 +251,7 @@ function PaymentForm({
               name="payment_date"
               render={({ field }) => (
                 <FormItem className="flex flex-col pt-1">
-                  <FormLabel className="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">
-                    Date
-                  </FormLabel>
+                  <FormLabel className="mb-1">Date</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -301,9 +295,7 @@ function PaymentForm({
             name="note"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs font-bold uppercase tracking-widest text-zinc-500">
-                  Notes (Optional)
-                </FormLabel>
+                <FormLabel>Notes (Optional)</FormLabel>
                 <FormControl>
                   <Textarea
                     placeholder="Add any relevant details about this payment..."
@@ -318,11 +310,7 @@ function PaymentForm({
           />
 
           {!isDrawer && (
-            <Button
-              type="submit"
-              disabled={isPending}
-              className="w-full mt-4 font-bold uppercase tracking-widest"
-            >
+            <Button type="submit" disabled={isPending} className="w-full mt-4">
               {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Confirm Payment
             </Button>
@@ -336,17 +324,13 @@ function PaymentForm({
             type="submit"
             form="payment-form"
             disabled={isPending}
-            className="w-full font-bold uppercase tracking-widest"
+            className="w-full"
           >
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Confirm Payment
           </Button>
           <DrawerClose asChild>
-            <Button
-              variant="outline"
-              className="w-full font-bold uppercase tracking-widest"
-              disabled={isPending}
-            >
+            <Button variant="outline" className="w-full" disabled={isPending}>
               Cancel
             </Button>
           </DrawerClose>

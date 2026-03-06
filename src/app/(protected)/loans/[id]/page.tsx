@@ -121,35 +121,36 @@ export default async function LoanDetailPage({ params }: LoanDetailPageProps) {
   return (
     <div className="min-h-screen bg-background pb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Top Navigation Bar */}
-      <div className="sticky top-0 z-30 w-full border-b bg-background/80 backdrop-blur-md px-4 sm:px-8 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
+      <div className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-sm px-4 sm:px-8 py-3 sm:py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
           <BackButton />
           <div>
-            <h1 className="text-xl font-bold tracking-tight">Loan Details</h1>
-            <p className="text-xs text-muted-foreground font-mono uppercase">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-lg sm:text-xl font-bold tracking-tight">
+                Loan Details
+              </h1>
+              <div
+                className={cn(
+                  "px-2 sm:px-2.5 h-6 rounded-full border text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm whitespace-nowrap",
+                  statusConfig.className,
+                )}
+              >
+                <StatusIcon className="h-3 w-3" />
+                {statusConfig.label}
+              </div>
+            </div>
+            <p className="text-[10px] sm:text-xs text-muted-foreground font-mono uppercase mt-0.5">
               ID: {loan.id.toUpperCase()}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3 self-end sm:self-auto">
-          {loan.status === Status.Draft && (
-            <DisburseLoanButton loanId={loan.id} />
+        {loan.status === Status.Draft && (
+          <DisburseLoanButton loanId={loan.id} />
+        )}
+        {(loan.status === Status.Active || loan.status === Status.Defaulted) &&
+          loan.outstanding_balance > 0 && (
+            <RegisterPaymentDialog loanId={loan.id} />
           )}
-          {(loan.status === Status.Active ||
-            loan.status === Status.Defaulted) &&
-            loan.outstanding_balance > 0 && (
-              <RegisterPaymentDialog loanId={loan.id} />
-            )}
-          <div
-            className={cn(
-              "px-3 py-1 rounded-full border text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-sm h-10 sm:h-8",
-              statusConfig.className,
-            )}
-          >
-            <StatusIcon className="h-3.5 w-3.5" />
-            {statusConfig.label}
-          </div>
-        </div>
       </div>
 
       <div className="container mx-auto p-4 md:p-8 space-y-8">
@@ -165,7 +166,7 @@ export default async function LoanDetailPage({ params }: LoanDetailPageProps) {
               </p>
             </CardHeader>
             <CardContent>
-              <h2 className="text-4xl font-extrabold tracking-tighter text-foreground decoration-primary/30 underline-offset-8">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tighter text-foreground decoration-primary/30 underline-offset-8 break-words">
                 {formatCurrency(loan.outstanding_balance)}
               </h2>
             </CardContent>
@@ -181,7 +182,7 @@ export default async function LoanDetailPage({ params }: LoanDetailPageProps) {
               </p>
             </CardHeader>
             <CardContent>
-              <h2 className="text-4xl font-extrabold tracking-tighter text-emerald-600 dark:text-emerald-400">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tighter text-emerald-600 dark:text-emerald-400 break-words">
                 {formatCurrency(loan.total_paid)}
               </h2>
             </CardContent>
@@ -197,7 +198,7 @@ export default async function LoanDetailPage({ params }: LoanDetailPageProps) {
               </p>
             </CardHeader>
             <CardContent>
-              <h2 className="text-4xl font-extrabold tracking-tighter">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tighter break-words">
                 {formatCurrency(loan.capital)}
               </h2>
             </CardContent>
