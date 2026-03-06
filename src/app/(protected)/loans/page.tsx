@@ -3,9 +3,11 @@ import { AlertCircle, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LoanFilters } from "@/components/loans/LoanFilters";
 import { LoanList } from "@/components/loans/LoanList";
+import { LoanListSkeleton } from "@/components/loans/LoanListSkeleton";
 import { getLoans } from "@/actions/loans";
 
 import Link from "next/link";
+import { Suspense } from "react";
 
 interface LoansPageProps {
   searchParams: Promise<{
@@ -19,6 +21,23 @@ interface LoansPageProps {
   }>;
 }
 
+async function LoanListData({ filters }: { filters: LoanRequest }) {
+  const result = await getLoans(filters);
+  const loanData = result.success ? result.data : null;
+  const fetchError = !result.success ? result.error : null;
+
+  if (fetchError) {
+    return (
+      <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg flex items-center gap-3 text-destructive">
+        <AlertCircle size={20} />
+        <p className="text-sm font-medium">{fetchError}</p>
+      </div>
+    );
+  }
+
+  return <LoanList loans={loanData?.data || []} meta={loanData?.meta} />;
+}
+
 export default async function LoansPage({ searchParams }: LoansPageProps) {
   const params = await searchParams;
 
@@ -30,10 +49,6 @@ export default async function LoansPage({ searchParams }: LoansPageProps) {
     date_from: params.date_from,
     date_to: params.date_to,
   };
-
-  const result = await getLoans(filters);
-  const loanData = result.success ? result.data : null;
-  const fetchError = !result.success ? result.error : null;
 
   return (
     <div className="space-y-6">
@@ -58,16 +73,10 @@ export default async function LoansPage({ searchParams }: LoansPageProps) {
       {/* Search & Filter Bar */}
       <LoanFilters />
 
-      {/* Error State */}
-      {fetchError && (
-        <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg flex items-center gap-3 text-destructive">
-          <AlertCircle size={20} />
-          <p className="text-sm font-medium">{fetchError}</p>
-        </div>
-      )}
-
-      {/* Loan List */}
-      <LoanList loans={loanData?.data || []} meta={loanData?.meta} />
+      {/* Loan List with Suspense */}
+      <Suspense key={JSON.stringify(filters)} fallback={<LoanListSkeleton />}>
+        <LoanListData filters={filters} />
+      </Suspense>
     </div>
   );
 }

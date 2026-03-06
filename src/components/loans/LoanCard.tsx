@@ -237,9 +237,7 @@ export function LoanCard({ loan }: { loan: Loan }) {
 
           <div className="flex items-center gap-3 shrink-0">
             {loan.status === Status.Draft && (
-              <div className="pt-1">
-                <DisburseLoanButton loanId={loan.id} />
-              </div>
+              <DisburseLoanButton loanId={loan.id} />
             )}
             <div
               className={cn(

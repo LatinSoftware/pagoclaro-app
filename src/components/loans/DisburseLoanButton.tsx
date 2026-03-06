@@ -6,12 +6,17 @@ import { disburseLoanAction } from "@/actions/loans";
 import { toast } from "sonner";
 import { Wallet, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface DisburseLoanButtonProps {
   loanId: string;
+  className?: string;
 }
 
-export function DisburseLoanButton({ loanId }: DisburseLoanButtonProps) {
+export function DisburseLoanButton({
+  loanId,
+  className,
+}: DisburseLoanButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -37,14 +42,17 @@ export function DisburseLoanButton({ loanId }: DisburseLoanButtonProps) {
     <Button
       size="sm"
       variant="default"
-      className="h-8 gap-1.5 font-bold uppercase tracking-wider text-[10px] bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+      className={cn(
+        "h-8 gap-1.5 font-bold text-[11px] rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-md hover:shadow-emerald-500/30 transition-all duration-300 active:scale-95 group/disburse",
+        className,
+      )}
       disabled={isLoading}
       onClick={handleDisburse}
     >
       {isLoading ? (
-        <Loader2 className="size-3 animate-spin" />
+        <Loader2 className="size-3.5 animate-spin" />
       ) : (
-        <Wallet className="size-3" />
+        <Wallet className="size-3.5 group-hover/disburse:scale-110 transition-transform" />
       )}
       Disburse
     </Button>

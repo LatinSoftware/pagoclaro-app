@@ -182,7 +182,7 @@ export default async function LoanDetailPage({ params }: LoanDetailPageProps) {
               </p>
             </CardHeader>
             <CardContent>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tighter text-emerald-600 dark:text-emerald-400 break-words">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tighter text-emerald-600 dark:text-emerald-400 wrap-break-word">
                 {formatCurrency(loan.total_paid)}
               </h2>
             </CardContent>

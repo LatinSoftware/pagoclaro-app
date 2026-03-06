@@ -8,6 +8,13 @@ import { useEffect, useState, useTransition } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { Status } from "@/types/loan";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const statuses: { label: string; value: Status | "all" }[] = [
   { label: "All Loans", value: "all" },
@@ -128,43 +135,84 @@ export function LoanFilters() {
 
         {/* Date Range Filters */}
         <div className="flex items-center gap-2 w-full md:w-auto px-2 md:px-0 pb-2 md:pb-0">
-          <div className="relative flex-1 md:w-36">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <CalendarDays className="size-3.5 text-muted-foreground" />
-            </div>
-            <Input
-              id="date-from"
-              type="date"
-              className={cn(
-                "pl-9 h-10 bg-transparent border-0 shadow-none hover:bg-muted/50 focus-visible:ring-1 focus-visible:ring-primary/30 rounded-full text-xs font-medium transition-all",
-                !dateFrom && "text-muted-foreground/70",
-              )}
-              value={dateFrom}
-              max={dateTo || undefined}
-              onChange={(e) => setDateFrom(e.target.value)}
-            />
-          </div>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className={cn(
+                  "flex-1 md:w-36 h-10 px-3 bg-transparent border-0 shadow-none hover:bg-muted/50 rounded-full text-xs font-medium transition-all justify-start gap-2",
+                  !dateFrom && "text-muted-foreground/70",
+                )}
+              >
+                <CalendarDays className="size-3.5 shrink-0" />
+                <span className="truncate">
+                  {dateFrom
+                    ? format(new Date(dateFrom + "T12:00:00"), "MMM dd, yyyy")
+                    : "From"}
+                </span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={
+                  dateFrom ? new Date(dateFrom + "T12:00:00") : undefined
+                }
+                onSelect={(date) => {
+                  if (date) {
+                    setDateFrom(format(date, "yyyy-MM-dd"));
+                  } else {
+                    setDateFrom("");
+                  }
+                }}
+                disabled={(date) =>
+                  dateTo ? date > new Date(dateTo + "T12:00:00") : false
+                }
+              />
+            </PopoverContent>
+          </Popover>
 
           <span className="text-muted-foreground/50 text-xs font-medium">
             —
           </span>
 
-          <div className="relative flex-1 md:w-36">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <CalendarDays className="size-3.5 text-muted-foreground" />
-            </div>
-            <Input
-              id="date-to"
-              type="date"
-              className={cn(
-                "pl-9 h-10 bg-transparent border-0 shadow-none hover:bg-muted/50 focus-visible:ring-1 focus-visible:ring-primary/30 rounded-full text-xs font-medium transition-all",
-                !dateTo && "text-muted-foreground/70",
-              )}
-              value={dateTo}
-              min={dateFrom || undefined}
-              onChange={(e) => setDateTo(e.target.value)}
-            />
-          </div>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className={cn(
+                  "flex-1 md:w-36 h-10 px-3 bg-transparent border-0 shadow-none hover:bg-muted/50 rounded-full text-xs font-medium transition-all justify-start gap-2",
+                  !dateTo && "text-muted-foreground/70",
+                )}
+              >
+                <CalendarDays className="size-3.5 shrink-0" />
+                <span className="truncate">
+                  {dateTo
+                    ? format(new Date(dateTo + "T12:00:00"), "MMM dd, yyyy")
+                    : "To"}
+                </span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={dateTo ? new Date(dateTo + "T12:00:00") : undefined}
+                onSelect={(date) => {
+                  if (date) {
+                    setDateTo(format(date, "yyyy-MM-dd"));
+                  } else {
+                    setDateTo("");
+                  }
+                }}
+                disabled={(date) =>
+                  dateFrom ? date < new Date(dateFrom + "T12:00:00") : false
+                }
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
 
           <div
             className={cn(
