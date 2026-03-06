@@ -23,7 +23,7 @@ export default async function LoansPage({ searchParams }: LoansPageProps) {
   const params = await searchParams;
 
   const filters: LoanRequest = {
-    client_id: params.client_id || params.search,
+    search: params.search,
     status: params.status !== "all" ? (params.status as Status) : undefined,
     page: params.page,
     limit: params.limit,

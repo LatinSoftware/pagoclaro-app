@@ -1,5 +1,5 @@
 export interface LoanRequest {
-  client_id?: string;
+  search?: string;
   date_from?: string;
   date_to?: string;
   limit?: string;

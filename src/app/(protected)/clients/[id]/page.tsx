@@ -12,7 +12,9 @@ interface ClientDetailPageProps {
   }>;
 }
 
-export default async function ClientDetailPage({ params }: ClientDetailPageProps) {
+export default async function ClientDetailPage({
+  params,
+}: ClientDetailPageProps) {
   const resolvedParams = await params;
   const result = await getClientDetail(resolvedParams.id);
 
@@ -20,11 +22,15 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
     if (result.error?.includes("404")) {
       notFound();
     }
-    
+
     return (
       <div className="flex min-h-screen flex-col items-center justify-center space-y-4 p-4 text-center">
-        <h2 className="text-2xl font-semibold text-slate-800 dark:text-slate-200">Ocurrió un error</h2>
-        <p className="text-muted-foreground">{result.error || "No se pudo cargar el cliente."}</p>
+        <h2 className="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+          Ocurrió un error
+        </h2>
+        <p className="text-muted-foreground">
+          {result.error || "No se pudo cargar el cliente."}
+        </p>
       </div>
     );
   }
@@ -36,10 +42,10 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
     <div className="w-full bg-white dark:bg-background">
       <div className="mx-auto w-full flex flex-col">
         <ClientHeader client={client} />
-        <ClientTabs 
-          client={client} 
+        <ClientTabs
+          client={client}
           infoContent={<ClientBasicInfo client={client} />}
-          loansContent={<ClientActiveLoans clientId={client.id} />}
+          loansContent={<ClientActiveLoans clientId={client.cedula} />}
           historyContent={<ClientTimeline events={client.events} />}
         />
       </div>
