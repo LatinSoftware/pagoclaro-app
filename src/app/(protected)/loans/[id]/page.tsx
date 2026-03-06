@@ -29,6 +29,7 @@ import Link from "next/link";
 import { Status, InstallmentStatus } from "@/types/loan";
 import { cn } from "@/lib/utils";
 import { DisburseLoanButton } from "@/components/loans/DisburseLoanButton";
+import { RegisterPaymentDialog } from "@/components/loans/RegisterPaymentDialog";
 import { formatCurrency, formatDate } from "@/lib/utils/loan-helpers";
 import { BackButton } from "@/components/ui/BackButton";
 
@@ -120,7 +121,7 @@ export default async function LoanDetailPage({ params }: LoanDetailPageProps) {
   return (
     <div className="min-h-screen bg-background pb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Top Navigation Bar */}
-      <div className="sticky top-0 z-30 w-full border-b bg-background/80 backdrop-blur-md px-4 sm:px-8 py-4 flex items-center justify-between">
+      <div className="sticky top-0 z-30 w-full border-b bg-background/80 backdrop-blur-md px-4 sm:px-8 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <BackButton />
           <div>
@@ -130,13 +131,18 @@ export default async function LoanDetailPage({ params }: LoanDetailPageProps) {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 self-end sm:self-auto">
           {loan.status === Status.Draft && (
             <DisburseLoanButton loanId={loan.id} />
           )}
+          {(loan.status === Status.Active ||
+            loan.status === Status.Defaulted) &&
+            loan.outstanding_balance > 0 && (
+              <RegisterPaymentDialog loanId={loan.id} />
+            )}
           <div
             className={cn(
-              "px-3 py-1 rounded-full border text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-sm h-8",
+              "px-3 py-1 rounded-full border text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-sm h-10 sm:h-8",
               statusConfig.className,
             )}
           >
