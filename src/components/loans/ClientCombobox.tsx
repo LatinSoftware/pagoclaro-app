@@ -127,7 +127,7 @@ export function ClientCombobox({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "w-full justify-between h-12 shadow-sm rounded-lg border-input bg-transparent text-left font-normal",
+            "w-full justify-between h-12 shadow-sm rounded-lg border-input bg-background transition-colors hover:bg-accent/50 focus:ring-2 focus:ring-primary/20 text-left font-normal",
             !value && "text-muted-foreground",
             error && "border-destructive focus-visible:ring-destructive",
           )}

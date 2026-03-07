@@ -1,11 +1,14 @@
 import { AlertCircle } from "lucide-react";
 import { PaymentFilters } from "@/components/payments/PaymentFilters";
-import { PaymentList } from "@/components/payments/PaymentList";
-import { PaymentListSkeleton } from "@/components/payments/PaymentListSkeleton";
 import { getPayments } from "@/actions/payments";
 import { GetPaymentsRequest } from "@/types/payment";
 
+import { CreatePaymentDialog } from "@/components/payments/CreatePaymentDialog";
+
 import { Suspense } from "react";
+import { PaginationMeta } from "@/types/pagination";
+import { PaymentList } from "@/components/payments/PaymentList";
+import { PaymentListSkeleton } from "@/components/payments/PaymentListSkeleton";
 
 interface PaymentsPageProps {
   searchParams: Promise<{
@@ -33,27 +36,8 @@ async function PaymentListData({ filters }: { filters: GetPaymentsRequest }) {
     );
   }
 
-  // Handle meta.total vs meta.total_records depending on the API actually returning The13129090
-  // In our types we have PaginationMeta which has `total` and `totalPages`.
-  // If the API returns it differently, we handle mapping inside actions or just use what we typed.
-  // Assume it matches PaginationMeta as per the types we defined, but API might vary.
-  // At least mapping to what PaymentList expects which is `payments` array and `meta` with `page, totalPages, limit, total`
-
-  // For the meta mapping: since API returns data under `data` and meta under `meta`, we just pass them.
-  // wait, the API interface given: The13129090 has total_pages and total_records
-  // Our interface `PaginationMeta` has `totalPages` and `total`
-  // We should safely format it depending on what it really returns:
-  const apiMeta = paymentData?.meta as any;
-  const safeMeta = apiMeta
-    ? {
-        page: apiMeta.page,
-        limit: apiMeta.limit,
-        totalPages: apiMeta.total_pages ?? apiMeta.totalPages ?? 0,
-        total: apiMeta.total_records ?? apiMeta.total ?? 0,
-      }
-    : undefined;
-
-  return <PaymentList payments={paymentData?.data || []} meta={safeMeta} />;
+  const apiMeta = paymentData?.meta as PaginationMeta;
+  return <PaymentList payments={paymentData?.data || []} meta={apiMeta} />;
 }
 
 export default async function PaymentsPage({
@@ -83,6 +67,7 @@ export default async function PaymentsPage({
             View and filter all registered payments.
           </p>
         </div>
+        <CreatePaymentDialog />
       </header>
 
       {/* Search & Filter Bar */}

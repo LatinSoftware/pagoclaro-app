@@ -3,6 +3,7 @@
 import { api } from "@/lib/api";
 import { handleApiError } from "@/lib/error-handler";
 import { revalidatePath } from "next/cache";
+import { format } from "date-fns";
 import { PaymentRequest, PaymentResponse } from "@/types/payment";
 import {
   createPaymentSchema,
@@ -65,7 +66,9 @@ export async function registerPaymentAction(
     loan_id: validated.loan_id,
     payment_method: validated.payment_method,
     note: validated.note || undefined,
-    payment_date: validated.payment_date,
+    payment_date: validated.payment_date
+      ? format(validated.payment_date, "yyyy-MM-dd")
+      : undefined,
   };
 
   try {

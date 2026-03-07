@@ -44,7 +44,7 @@ export interface PaymentRequest {
   /**
    * Payment effective date. Defaults to today if omitted.
    */
-  payment_date?: Date;
+  payment_date?: string | Date;
   /**
    * Payment method used by the client.
    */

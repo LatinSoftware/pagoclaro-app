@@ -8,6 +8,7 @@ export interface LoanRequest {
   limit?: string;
   page?: string;
   status?: string;
+  client_id?: string;
 }
 
 export interface LoanResponse {
