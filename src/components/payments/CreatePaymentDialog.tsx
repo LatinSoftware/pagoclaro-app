@@ -21,11 +21,17 @@ import {
 } from "@/components/ui/drawer";
 import { GlobalPaymentForm } from "./GlobalPaymentForm";
 
-export function CreatePaymentDialog() {
+export function CreatePaymentDialog({
+  trigger,
+  defaultClientId,
+}: {
+  trigger?: React.ReactNode;
+  defaultClientId?: string;
+} = {}) {
   const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const TriggerButton = (
+  const TriggerButton = trigger || (
     <Button className="rounded-lg shadow-md gap-2 h-11 px-5 group">
       <div className="relative">
         <CreditCard className="size-4 group-hover:scale-110 transition-transform" />
@@ -57,7 +63,10 @@ export function CreatePaymentDialog() {
                 </div>
               </div>
             </DialogHeader>
-            <GlobalPaymentForm setOpen={setOpen} />
+            <GlobalPaymentForm
+              setOpen={setOpen}
+              defaultClientId={defaultClientId}
+            />
           </div>
         </DialogContent>
       </Dialog>
@@ -85,7 +94,11 @@ export function CreatePaymentDialog() {
               </div>
             </div>
           </DrawerHeader>
-          <GlobalPaymentForm setOpen={setOpen} isDrawer />
+          <GlobalPaymentForm
+            setOpen={setOpen}
+            isDrawer
+            defaultClientId={defaultClientId}
+          />
         </div>
       </DrawerContent>
     </Drawer>

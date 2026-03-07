@@ -55,16 +55,19 @@ import { formatCurrency } from "@/lib/utils/loan-helpers";
 interface GlobalPaymentFormProps {
   setOpen: (open: boolean) => void;
   isDrawer?: boolean;
+  defaultClientId?: string;
 }
 
 export function GlobalPaymentForm({
   setOpen,
   isDrawer = false,
+  defaultClientId = "",
 }: GlobalPaymentFormProps) {
   const [isPending, startTransition] = useTransition();
   const [loans, setLoans] = useState<Loan[]>([]);
   const [isLoadingLoans, setIsLoadingLoans] = useState(false);
-  const [selectedClientId, setSelectedClientId] = useState<string>("");
+  const [selectedClientId, setSelectedClientId] =
+    useState<string>(defaultClientId);
 
   const form = useForm<CreatePaymentFormValues>({
     resolver: zodResolver(createPaymentSchema),
@@ -151,6 +154,7 @@ export function GlobalPaymentForm({
               <ClientCombobox
                 value={selectedClientId}
                 onChange={(val) => setSelectedClientId(val)}
+                disabled={!!defaultClientId}
               />
             </FormControl>
             <FormDescription>
@@ -171,16 +175,31 @@ export function GlobalPaymentForm({
                 <Select
                   onValueChange={field.onChange}
                   value={field.value}
-                  disabled={!selectedClientId || isLoadingLoans || isPending}
+                  disabled={
+                    !selectedClientId ||
+                    isLoadingLoans ||
+                    isPending ||
+                    (loans.length === 0 && !isLoadingLoans)
+                  }
                 >
                   <FormControl>
-                    <SelectTrigger className="h-auto min-h-12 py-2 rounded-lg shadow-sm bg-background transition-colors hover:bg-accent/50 focus:ring-2 focus:ring-primary/20 w-full">
+                    <SelectTrigger
+                      className={cn(
+                        "h-auto min-h-12 py-2 rounded-lg shadow-sm bg-background transition-colors hover:bg-accent/50 focus:ring-2 focus:ring-primary/20 w-full",
+                        loans.length === 0 &&
+                          selectedClientId &&
+                          !isLoadingLoans &&
+                          "text-destructive border-destructive/50",
+                      )}
+                    >
                       <SelectValue
                         placeholder={
                           isLoadingLoans
                             ? "Loading loans..."
                             : selectedClientId
-                              ? "Select a loan"
+                              ? loans.length === 0
+                                ? "No active loans found"
+                                : "Select a loan"
                               : "Select a client first"
                         }
                       />
@@ -195,7 +214,8 @@ export function GlobalPaymentForm({
                       >
                         <div className="flex flex-col gap-1 items-start">
                           <span className="font-semibold text-sm">
-                            {formatCurrency(loan.total_amount)} Loan
+                            {formatCurrency(loan.total_amount || loan.capital)}{" "}
+                            Loan
                           </span>
                           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                             <span>
@@ -212,13 +232,6 @@ export function GlobalPaymentForm({
                         </div>
                       </SelectItem>
                     ))}
-                    {selectedClientId &&
-                      !isLoadingLoans &&
-                      loans.length === 0 && (
-                        <div className="p-4 text-center text-sm text-muted-foreground">
-                          No active loans found for this client.
-                        </div>
-                      )}
                   </SelectContent>
                 </Select>
                 <FormMessage />
