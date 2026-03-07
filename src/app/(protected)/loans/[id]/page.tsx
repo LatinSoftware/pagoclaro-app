@@ -30,6 +30,7 @@ import { Status, InstallmentStatus } from "@/types/loan";
 import { cn } from "@/lib/utils";
 import { DisburseLoanButton } from "@/components/loans/DisburseLoanButton";
 import { RegisterPaymentDialog } from "@/components/loans/RegisterPaymentDialog";
+import { EditLoanDialog } from "@/components/loans/EditLoanDialog";
 import { formatCurrency, formatDate } from "@/lib/utils/loan-helpers";
 import { BackButton } from "@/components/ui/BackButton";
 
@@ -145,7 +146,10 @@ export default async function LoanDetailPage({ params }: LoanDetailPageProps) {
           </div>
         </div>
         {loan.status === Status.Draft && (
-          <DisburseLoanButton loanId={loan.id} />
+          <div className="flex items-center gap-2">
+            <EditLoanDialog loan={loan} />
+            <DisburseLoanButton loanId={loan.id} />
+          </div>
         )}
         {(loan.status === Status.Active || loan.status === Status.Defaulted) &&
           loan.outstanding_balance > 0 && (
@@ -166,7 +170,7 @@ export default async function LoanDetailPage({ params }: LoanDetailPageProps) {
               </p>
             </CardHeader>
             <CardContent>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tighter text-foreground decoration-primary/30 underline-offset-8 break-words">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tighter text-foreground decoration-primary/30 underline-offset-8 wrap-break-word">
                 {formatCurrency(loan.outstanding_balance)}
               </h2>
             </CardContent>
@@ -198,7 +202,7 @@ export default async function LoanDetailPage({ params }: LoanDetailPageProps) {
               </p>
             </CardHeader>
             <CardContent>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tighter break-words">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tighter wrap-break-word">
                 {formatCurrency(loan.capital)}
               </h2>
             </CardContent>

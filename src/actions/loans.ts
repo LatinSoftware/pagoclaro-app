@@ -13,6 +13,10 @@ import {
   createLoanSchema,
   type CreateLoanFormValues,
 } from "@/lib/schemas/create-loan";
+import {
+  editLoanSchema,
+  type EditLoanFormValues,
+} from "@/lib/schemas/edit-loan";
 import { revalidatePath } from "next/cache";
 
 export async function getLoans(
@@ -96,5 +100,62 @@ export async function createLoanAction(
     return { success: true, data };
   } catch (error: unknown) {
     return handleApiError(error, "createLoanAction");
+  }
+}
+
+export async function updateLoanAction(
+  id: string,
+  formValues: EditLoanFormValues,
+): Promise<{
+  success: boolean;
+  data?: LoanDetailResponse;
+  error?: string;
+  fieldErrors?: Record<string, string>;
+}> {
+  // Server-side validation
+  const parsed = editLoanSchema.safeParse(formValues);
+
+  if (!parsed.success) {
+    const fieldErrors: Record<string, string> = {};
+    for (const issue of parsed.error.issues) {
+      const field = issue.path[0]?.toString();
+      if (field && !fieldErrors[field]) {
+        fieldErrors[field] = issue.message;
+      }
+    }
+    return { success: false, error: "Validation failed", fieldErrors };
+  }
+
+  const validated = parsed.data;
+
+  // Transform for the API
+  const requestBody: Partial<CreateLoanRequest> = {
+    ...validated,
+    disbursement_date: validated.disbursement_date
+      ? new Date(validated.disbursement_date).toISOString()
+      : undefined,
+    interest_rate: validated.interest_rate
+      ? validated.interest_rate / 100
+      : undefined,
+  };
+
+  // Remove undefined values
+  Object.keys(requestBody).forEach(
+    (key) =>
+      requestBody[key as keyof typeof requestBody] === undefined &&
+      delete requestBody[key as keyof typeof requestBody],
+  );
+
+  try {
+    const data = await api.patch<
+      LoanDetailResponse,
+      Partial<CreateLoanRequest>
+    >(`/loans/${id}`, requestBody);
+
+    revalidatePath(`/loans/${id}`);
+    revalidatePath("/loans");
+    return { success: true, data };
+  } catch (error: unknown) {
+    return handleApiError(error, "updateLoanAction");
   }
 }

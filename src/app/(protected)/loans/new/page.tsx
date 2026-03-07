@@ -1,7 +1,16 @@
 import { CreateLoanForm } from "@/components/loans/CreateLoanForm";
 import { BackButton } from "@/components/ui/BackButton";
 
-export default function NewLoanPage() {
+interface NewLoanPageProps {
+  searchParams: Promise<{
+    client_id?: string;
+  }>;
+}
+
+export default async function NewLoanPage({ searchParams }: NewLoanPageProps) {
+  const resolvedParams = await searchParams;
+  const clientId = resolvedParams.client_id || "";
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -18,7 +27,7 @@ export default function NewLoanPage() {
       </header>
 
       {/* Form */}
-      <CreateLoanForm />
+      <CreateLoanForm defaultClientId={clientId} />
     </div>
   );
 }

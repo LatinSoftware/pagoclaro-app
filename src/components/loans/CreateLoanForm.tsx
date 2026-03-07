@@ -63,7 +63,11 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 
-export function CreateLoanForm() {
+interface CreateLoanFormProps {
+  defaultClientId?: string;
+}
+
+export function CreateLoanForm({ defaultClientId = "" }: CreateLoanFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -71,7 +75,7 @@ export function CreateLoanForm() {
   const form = useForm<CreateLoanFormValues>({
     resolver: zodResolver(createLoanSchema),
     defaultValues: {
-      client_id: "",
+      client_id: defaultClientId,
       capital: undefined,
       interest_rate: undefined,
       term: undefined,

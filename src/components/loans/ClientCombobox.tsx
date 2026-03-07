@@ -17,19 +17,21 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { getClientsListAction } from "@/actions/clients";
+import { getClientsListAction, getClientProfile } from "@/actions/clients";
 import { ClientProfile } from "@/types/client";
 
 interface ClientComboboxProps {
   value: string;
   onChange: (clientId: string) => void;
   error?: string;
+  disabled?: boolean;
 }
 
 export function ClientCombobox({
   value,
   onChange,
   error,
+  disabled,
 }: ClientComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
@@ -110,9 +112,19 @@ export function ClientCombobox({
       const found = clients.find((c) => c.id === value);
       if (found) {
         setSelectedClientName(`${found.name} (${found.cedula})`);
-      } else if (!selectedClientName && !isLoading && clients.length > 0) {
-        // We could fetch single client here if needed for Edit mode,
-        // but since this is Create form, initial value is empty.
+      } else if (!selectedClientName && !isLoading) {
+        // Fetch single client here if needed for Edit mode or default values
+        getClientProfile(value).then((res) => {
+          if (res.success && res.data) {
+            setSelectedClientName(`${res.data.name} (${res.data.cedula})`);
+            setClients((prev) => {
+              if (!prev.find((c) => c.id === value)) {
+                return [res.data as ClientProfile, ...prev];
+              }
+              return prev;
+            });
+          }
+        });
       }
     } else {
       setSelectedClientName("");
@@ -126,6 +138,7 @@ export function ClientCombobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
+          disabled={disabled}
           className={cn(
             "w-full justify-between h-12 shadow-sm rounded-lg border-input bg-background transition-colors hover:bg-accent/50 focus:ring-2 focus:ring-primary/20 text-left font-normal",
             !value && "text-muted-foreground",
