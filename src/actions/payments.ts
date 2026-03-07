@@ -8,6 +8,33 @@ import {
   createPaymentSchema,
   type CreatePaymentFormValues,
 } from "@/lib/schemas/payment";
+import { GetPaymentsRequest, GetPaymentsResponse } from "@/types/payment";
+
+export async function getPayments(
+  filters: GetPaymentsRequest,
+): Promise<
+  | { success: true; data: GetPaymentsResponse }
+  | { success: false; error: string }
+> {
+  try {
+    const params = new URLSearchParams();
+    if (filters.search) params.append("search", filters.search);
+    if (filters.status && filters.status !== "all")
+      params.append("status", filters.status);
+    if (filters.page) params.append("page", filters.page);
+    if (filters.limit) params.append("limit", filters.limit);
+    if (filters.date_from) params.append("date_from", filters.date_from);
+    if (filters.date_to) params.append("date_to", filters.date_to);
+    if (filters.loan_id) params.append("loan_id", filters.loan_id);
+
+    const queryString = params.toString() ? `?${params.toString()}` : "";
+    const data = await api.get<GetPaymentsResponse>(`/payments${queryString}`);
+
+    return { success: true, data };
+  } catch (error: unknown) {
+    return handleApiError(error, "getPayments");
+  }
+}
 
 export async function registerPaymentAction(
   formValues: CreatePaymentFormValues,

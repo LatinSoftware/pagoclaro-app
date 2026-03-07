@@ -1,4 +1,32 @@
-import { InstallmentStatus, Status as LoanStatus } from "./loan";
+import { InstallmentStatus, Status as LoanStatus, Client } from "./loan";
+import { PaginationMeta } from "./pagination";
+
+export interface GetPaymentsRequest {
+  date_from?: string;
+  date_to?: string;
+  limit?: string;
+  loan_id?: string;
+  page?: string;
+  search?: string;
+  status?: string;
+}
+
+export interface GetPaymentsResponse {
+  data: PaymentDatum[];
+  meta: PaginationMeta;
+}
+
+export interface PaymentDatum {
+  amount: number;
+  client: Client;
+  id: string;
+  loan_id: string;
+  note?: null | string;
+  payment_date: string | Date;
+  payment_method: PaymentMethod;
+  status: PaymentStatus;
+  tenant_id: string;
+}
 
 export interface PaymentRequest {
   /**
