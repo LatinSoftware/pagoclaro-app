@@ -1,3 +1,6 @@
+import { PaginationMeta } from "./pagination";
+export type { PaginationMeta };
+
 export interface LoanRequest {
   search?: string;
   date_from?: string;
@@ -98,13 +101,6 @@ export enum Status {
   Defaulted = "defaulted",
   Draft = "draft",
   PaidOff = "paid_off",
-}
-
-export interface PaginationMeta {
-  limit: number;
-  page: number;
-  total: number;
-  totalPages: number;
 }
 
 /** Request body for POST /loans */

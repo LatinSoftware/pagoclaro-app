@@ -1,5 +1,6 @@
 import { Briefcase } from "lucide-react";
-import { Loan, PaginationMeta } from "@/types/loan";
+import { Loan } from "@/types/loan";
+import { PaginationMeta } from "@/types/pagination";
 import { LoanCard } from "./LoanCard";
 import { LoanPagination } from "./LoanPagination";
 
