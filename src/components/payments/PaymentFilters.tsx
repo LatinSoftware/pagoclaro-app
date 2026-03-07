@@ -43,20 +43,28 @@ export function PaymentFilters() {
 
   // Update URL when debounced search changes
   useEffect(() => {
+    const currentSearch = searchParams.get("search") ?? "";
+    if (debouncedSearch === currentSearch) return;
+
     const params = new URLSearchParams(searchParams);
     if (debouncedSearch) {
       params.set("search", debouncedSearch);
     } else {
       params.delete("search");
     }
-    params.set("page", "1");
+    params.delete("page");
     startTransition(() => {
       router.push(`${pathname}?${params.toString()}`);
     });
-  }, [debouncedSearch]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [debouncedSearch, pathname, router, searchParams]);
 
   // Update URL when debounced date filters change
   useEffect(() => {
+    const currentFrom = searchParams.get("date_from") ?? "";
+    const currentTo = searchParams.get("date_to") ?? "";
+    if (debouncedDateFrom === currentFrom && debouncedDateTo === currentTo)
+      return;
+
     const params = new URLSearchParams(searchParams);
     if (debouncedDateFrom) {
       params.set("date_from", debouncedDateFrom);
@@ -68,11 +76,11 @@ export function PaymentFilters() {
     } else {
       params.delete("date_to");
     }
-    params.set("page", "1");
+    params.delete("page");
     startTransition(() => {
       router.push(`${pathname}?${params.toString()}`);
     });
-  }, [debouncedDateFrom, debouncedDateTo]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [debouncedDateFrom, debouncedDateTo, pathname, router, searchParams]);
 
   const handleStatusChange = (status: PaymentStatus | "all") => {
     const params = new URLSearchParams(searchParams);
@@ -81,7 +89,7 @@ export function PaymentFilters() {
     } else {
       params.set("status", status);
     }
-    params.set("page", "1");
+    params.delete("page");
     startTransition(() => {
       router.push(`${pathname}?${params.toString()}`);
     });

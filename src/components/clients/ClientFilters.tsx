@@ -26,18 +26,21 @@ export function ClientFilters() {
 
   // Update URL when debounced search changes
   useEffect(() => {
+    const currentSearch = searchParams.get("search") ?? "";
+    if (debouncedSearch === currentSearch) return;
+
     const params = new URLSearchParams(searchParams);
     if (debouncedSearch) {
       params.set("search", debouncedSearch);
     } else {
       params.delete("search");
     }
-    params.set("page", "1"); // Reset to first page on search
-    
+    params.delete("page"); // Reset to first page by removing page param
+
     startTransition(() => {
       router.push(`${pathname}?${params.toString()}`);
     });
-  }, [debouncedSearch, pathname, router]);
+  }, [debouncedSearch, pathname, router, searchParams]);
 
   const handleStatusChange = (status: ClientStatus | "all") => {
     const params = new URLSearchParams(searchParams);
@@ -46,8 +49,8 @@ export function ClientFilters() {
     } else {
       params.set("status", status);
     }
-    params.set("page", "1"); // Reset to first page on filter change
-    
+    params.delete("page"); // Reset to first page by removing page param
+
     startTransition(() => {
       router.push(`${pathname}?${params.toString()}`);
     });
@@ -77,7 +80,9 @@ export function ClientFilters() {
             size="sm"
             className={cn(
               "rounded-full px-5 py-2 text-xs font-semibold whitespace-nowrap",
-              currentStatus === s.value ? "shadow-sm" : "bg-primary/5 hover:bg-primary/10 text-primary border-none"
+              currentStatus === s.value
+                ? "shadow-sm"
+                : "bg-primary/5 hover:bg-primary/10 text-primary border-none",
             )}
             onClick={() => handleStatusChange(s.value)}
           >
