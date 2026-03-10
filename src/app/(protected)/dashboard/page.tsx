@@ -1,87 +1,73 @@
-import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { User, Settings, CreditCard } from "lucide-react";
+import { getDashboardSummary } from "@/actions/dashboard";
+import { KpiCards } from "@/components/dashboard/KpiCards";
+import { CollectionSummary } from "@/components/dashboard/CollectionSummary";
+import { AttentionTable } from "@/components/dashboard/AttentionTable";
+import { CollectionsChart } from "@/components/dashboard/CollectionsChart";
+import { InstallmentDistribution } from "@/components/dashboard/InstallmentDistribution";
+import { UpcomingInstallments } from "@/components/dashboard/UpcomingInstallments";
+import { AlertTriangle } from "lucide-react";
 
 export default async function DashboardPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const result = await getDashboardSummary();
 
-  if (!user) {
-    redirect("/login");
+  if (!result.success) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-4">
+        <AlertTriangle size={48} className="text-destructive" />
+        <h2 className="text-xl font-semibold text-foreground">
+          Error cargando el dashboard
+        </h2>
+        <p className="text-sm">{result.error}</p>
+      </div>
+    );
   }
 
+  const {
+    kpis,
+    collectionSummary,
+    attentionItems,
+    collectionsChart,
+    installmentDistribution,
+    upcomingInstallments,
+  } = result.data;
+
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
+      {/* Header */}
       <header>
-        <h1 className="text-3xl font-bold text-foreground">Welcome back, {user.email?.split('@')[0]}!</h1>
-        <p className="text-muted-foreground mt-1 text-lg">Here&apos;s what&apos;s happening with your account today.</p>
+        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+        <p className="text-muted-foreground mt-1">
+          Resumen de tu negocio en tiempo real
+        </p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="hover:border-primary/30 transition-colors">
-          <CardHeader>
-            <div className="bg-primary/10 w-fit p-2 rounded-lg text-primary mb-2">
-              <User size={20} />
-            </div>
-            <CardTitle className="text-xl">Profile</CardTitle>
-            <CardDescription>Manage your personal information.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-sm font-medium">Email: <span className="text-muted-foreground">{user.email}</span></div>
-          </CardContent>
-        </Card>
+      {/* Section 1: KPI Cards */}
+      <section>
+        <KpiCards kpis={kpis} />
+      </section>
 
-        <Card className="hover:border-primary/30 transition-colors">
-          <CardHeader>
-            <div className="bg-primary/10 w-fit p-2 rounded-lg text-primary mb-2">
-              <CreditCard size={20} />
-            </div>
-            <CardTitle className="text-xl">Wallet</CardTitle>
-            <CardDescription>View your balance and transactions.</CardDescription>
-          </CardHeader>
-          <CardContent>
-              <div className="text-2xl font-bold text-primary">$12,450.00</div>
-          </CardContent>
-        </Card>
+      {/* Section 2: Collection Summary */}
+      <section>
+        <h2 className="text-lg font-semibold text-foreground mb-4">
+          Resumen de Cobranza
+        </h2>
+        <CollectionSummary summary={collectionSummary} />
+      </section>
 
-        <Card className="hover:border-primary/30 transition-colors">
-          <CardHeader>
-            <div className="bg-primary/10 w-fit p-2 rounded-lg text-primary mb-2">
-              <Settings size={20} />
-            </div>
-            <CardTitle className="text-xl">Settings</CardTitle>
-            <CardDescription>Configure your account preferences.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {/* Using a relative link or action would be better here */}
-            <div className="text-sm text-muted-foreground">Manage your preferences in settings.</div>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Section 3: Requires Attention Table */}
+      <section>
+        <AttentionTable items={attentionItems} />
+      </section>
 
-      <section className="space-y-4">
-        <h2 className="text-2xl font-bold">Recent Activity</h2>
-        <Card>
-          <CardContent className="p-0">
-              <div className="divide-y">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
-                    <div className="flex items-center gap-4">
-                      <div className="bg-muted size-10 rounded-full flex items-center justify-center text-muted-foreground">
-                        <CreditCard size={20} />
-                      </div>
-                      <div>
-                        <p className="font-semibold">Payment Received</p>
-                        <p className="text-xs text-muted-foreground">Feb {19 - i}, 2026</p>
-                      </div>
-                    </div>
-                    <span className="font-bold text-primary">+$450.00</span>
-                  </div>
-                ))}
-              </div>
-          </CardContent>
-        </Card>
+      {/* Section 4 & 5: Charts Row */}
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <CollectionsChart data={collectionsChart} />
+        <InstallmentDistribution distribution={installmentDistribution} />
+      </section>
+
+      {/* Section 6: Upcoming Installments */}
+      <section>
+        <UpcomingInstallments installments={upcomingInstallments} />
       </section>
     </div>
   );
