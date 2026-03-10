@@ -8,6 +8,7 @@ class ApiService {
   constructor() {
     this.instance = axios.create({
       baseURL: API_BASE_URL,
+      adapter: "fetch", // Use fetch to prevent Node url.parse deprecation warning
       headers: {
         "Content-Type": "application/json",
       },
