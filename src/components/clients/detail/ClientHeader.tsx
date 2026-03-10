@@ -15,6 +15,8 @@ import {
   AlertTriangle,
   Info,
   Shield,
+  ShieldAlert,
+  AlertCircle,
   Clock,
   Verified,
 } from "lucide-react";
@@ -63,6 +65,54 @@ export function ClientHeader({ client }: ClientHeaderProps) {
 
   const badge = getBadgeConfig(client.financialStatus);
   const StatusIcon = badge.icon;
+
+  const getRiskScoreConfig = (score: string = "Low") => {
+    switch (score) {
+      case "Low":
+        return {
+          container:
+            "bg-[#11d473]/10 border border-[#11d473]/30 shadow-[0_0_10px_rgba(17,212,115,0.5)] dark:shadow-[0_0_10px_rgba(17,212,115,0.3)] z-10",
+          text: "text-[#11d473]",
+          iconText: "text-[#11d473]",
+          icon: Shield,
+        };
+      case "Medium":
+        return {
+          container:
+            "bg-amber-400/10 border border-amber-400/30 shadow-[0_0_10px_rgba(245,158,11,0.5)] dark:shadow-[0_0_10px_rgba(245,158,11,0.3)] z-10",
+          text: "text-amber-500",
+          iconText: "text-amber-500",
+          icon: AlertTriangle,
+        };
+      case "High":
+        return {
+          container:
+            "bg-orange-500/10 border border-orange-500/30 shadow-[0_0_10px_rgba(249,115,22,0.5)] dark:shadow-[0_0_10px_rgba(249,115,22,0.3)] z-10",
+          text: "text-orange-600",
+          iconText: "text-orange-600",
+          icon: AlertCircle,
+        };
+      case "CRITICAL":
+        return {
+          container:
+            "bg-red-600/10 border border-red-600/30 shadow-[0_0_15px_rgba(220,38,38,0.6)] dark:shadow-[0_0_15px_rgba(220,38,38,0.4)] animate-pulse z-10",
+          text: "text-red-600",
+          iconText: "text-red-600",
+          icon: ShieldAlert,
+        };
+      default:
+        return {
+          container:
+            "bg-[#11d473]/10 border border-[#11d473]/30 shadow-[0_0_10px_rgba(17,212,115,0.5)] dark:shadow-[0_0_10px_rgba(17,212,115,0.3)] z-10",
+          text: "text-[#11d473]",
+          iconText: "text-[#11d473]",
+          icon: Shield,
+        };
+    }
+  };
+
+  const riskConfig = getRiskScoreConfig(client.riskScore);
+  const RiskIcon = riskConfig.icon;
 
   const formatMoney = (amount: number) =>
     new Intl.NumberFormat("es-DO", {
@@ -139,12 +189,30 @@ export function ClientHeader({ client }: ClientHeaderProps) {
 
         {/* Dynamic Badges */}
         <div className="flex gap-3 w-full max-w-sm md:max-w-md md:w-auto">
-          <div className="flex-1 md:w-32 flex flex-col items-center justify-center py-2.5 px-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 shadow-sm transition-all hover:-translate-y-1">
-            <span className="text-[10px] uppercase tracking-widest text-emerald-700 dark:text-emerald-400 font-bold mb-1">
+          <div
+            className={cn(
+              "flex-1 md:w-32 flex flex-col items-center justify-center py-2.5 px-4 rounded-xl transition-all hover:-translate-y-1 relative",
+              riskConfig.container,
+            )}
+          >
+            {/* Inner glow effect for some extra aura */}
+            <div className="absolute inset-0 rounded-xl bg-white/40 dark:bg-background/20 mix-blend-overlay pointer-events-none" />
+
+            <span
+              className={cn(
+                "text-[10px] uppercase tracking-widest font-bold mb-1 relative z-10",
+                riskConfig.text,
+              )}
+            >
               Risk Score
             </span>
-            <div className="flex items-center gap-1 text-emerald-800 dark:text-emerald-300 font-black">
-              <Shield className="h-4 w-4" />
+            <div
+              className={cn(
+                "flex items-center gap-1 font-black relative z-10",
+                riskConfig.iconText,
+              )}
+            >
+              <RiskIcon className="h-4 w-4" />
               <span>{client.riskScore || "Low"}</span>
             </div>
           </div>

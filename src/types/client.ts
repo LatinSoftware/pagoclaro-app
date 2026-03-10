@@ -13,6 +13,7 @@ export interface Client {
   tenantId: string;
   createdAt: string;
   updatedAt: string;
+  pendingBalance?: number;
   // Financial info (suggested by design)
   totalRevenue?: number;
   outstandingBalance?: number;
@@ -39,7 +40,7 @@ export interface ClientProfile extends Client {
   nextInstallmentAmount?: number;
 
   events: ClientTimelineEvent[];
-  riskScore?: "Low" | "Medium" | "High";
+  riskScore?: "Low" | "Medium" | "High" | "CRITICAL";
   punctuality?: number;
 }
 
