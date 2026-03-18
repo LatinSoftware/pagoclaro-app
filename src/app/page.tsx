@@ -1,4 +1,10 @@
+import { Metadata } from "next";
 import Image from "next/image";
+
+export const metadata: Metadata = {
+  title: "Bienvenidos a Pago Claro",
+  description: "La plataforma definitiva para gestionar préstamos y cobros de manera profesional y automática.",
+};
 
 export default function Home() {
   return (

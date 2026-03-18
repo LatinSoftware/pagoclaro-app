@@ -1,4 +1,11 @@
 import { CreateLoanForm } from "@/components/loans/CreateLoanForm";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Nuevo Préstamo",
+  description: "Crea un nuevo contrato de préstamo, define las cuotas y el interés.",
+};
+
 import { BackButton } from "@/components/ui/BackButton";
 
 interface NewLoanPageProps {

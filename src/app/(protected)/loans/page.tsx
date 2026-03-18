@@ -1,4 +1,11 @@
 import { Status, LoanRequest } from "@/types/loan";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Gestión de Préstamos",
+  description: "Administra préstamos activos, borradores y cancelaciones de manera centralizada.",
+};
+
 import { AlertCircle, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LoanFilters } from "@/components/loans/LoanFilters";

@@ -1,4 +1,11 @@
 import { api } from "@/lib/api";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Directorio de Clientes",
+  description: "Gestiona tu base de datos de clientes, historial de pagos y perfiles financieros.",
+};
+
 import { ClientListResponse, ClientFilters, ClientStatus } from "@/types/client";
 import { UserPlus, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -34,8 +41,9 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
       params: filters
     });
   } catch (error) {
-    fetchError = getErrorMessage(error);
+    fetchError = getErrorMessage(error).error;
   }
+
 
   return (
     <div className="space-y-6">

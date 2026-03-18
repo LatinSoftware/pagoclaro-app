@@ -1,4 +1,10 @@
 import { AlertCircle } from "lucide-react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Historial de Pagos",
+  description: "Consulta y filtra todos los pagos registrados en el sistema.",
+};
 import { PaymentFilters } from "@/components/payments/PaymentFilters";
 import { getPayments } from "@/actions/payments";
 import { GetPaymentsRequest } from "@/types/payment";

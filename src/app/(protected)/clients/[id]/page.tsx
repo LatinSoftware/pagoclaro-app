@@ -1,4 +1,5 @@
 import { getClientDetail } from "@/actions/clients";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ClientHeader } from "@/components/clients/detail/ClientHeader";
 import { ClientTabs } from "@/components/clients/detail/ClientTabs";
@@ -11,6 +12,27 @@ interface ClientDetailPageProps {
     id: string;
   }>;
 }
+
+export async function generateMetadata({
+  params,
+}: ClientDetailPageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const result = await getClientDetail(resolvedParams.id);
+
+  if (!result.success || !result.data) {
+    return {
+      title: "Cliente no encontrado",
+    };
+  }
+
+  const client = result.data;
+  return {
+    title: `${client.name}`,
+    description: `Detalles del perfil, préstamos y pagos de ${client.name}.`,
+  };
+}
+
+
 
 export default async function ClientDetailPage({
   params,

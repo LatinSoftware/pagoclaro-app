@@ -1,5 +1,28 @@
 import { getLoanById } from "@/actions/loans";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const result = await getLoanById(id);
+
+  if (!result.success || !result.data) {
+    return {
+      title: "Préstamo no encontrado",
+    };
+  }
+
+  const loan = result.data;
+  return {
+    title: `Préstamo #${loan.id.slice(0, 8)} - ${loan.client.name}`,
+    description: `Detalles del préstamo de ${loan.client.name}, incluyendo capital de ${loan.capital}, intereses y tabla de amortización.`,
+  };
+}
+
 import {
   Card,
   CardContent,

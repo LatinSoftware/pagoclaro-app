@@ -42,15 +42,32 @@ import {
 } from "@/components/ui/popover";
 
 import { PaymentMethod } from "@/types/payment";
-import { Loan, Status as LoanStatus } from "@/types/loan";
+import {
+  Loan,
+  LoanInstallment,
+  InstallmentStatus,
+  Status as LoanStatus,
+} from "@/types/loan";
 import {
   CreatePaymentFormValues,
   createPaymentSchema,
 } from "@/lib/schemas/payment";
 import { registerPaymentAction } from "@/actions/payments";
-import { getLoans } from "@/actions/loans";
+import { getLoans, getLoanById } from "@/actions/loans";
 import { ClientCombobox } from "@/components/loans/ClientCombobox";
 import { formatCurrency } from "@/lib/utils/loan-helpers";
+
+/** Finds the next unpaid installment for a loan */
+function getNextInstallment(
+  installments: LoanInstallment[],
+): LoanInstallment | undefined {
+  return installments.find(
+    (i) =>
+      i.status === InstallmentStatus.Overdue ||
+      i.status === InstallmentStatus.Partial ||
+      i.status === InstallmentStatus.Pending,
+  );
+}
 
 interface GlobalPaymentFormProps {
   setOpen: (open: boolean) => void;
@@ -66,6 +83,9 @@ export function GlobalPaymentForm({
   const [isPending, startTransition] = useTransition();
   const [loans, setLoans] = useState<Loan[]>([]);
   const [isLoadingLoans, setIsLoadingLoans] = useState(false);
+  const [loanInstallmentsMap, setLoanInstallmentsMap] = useState<
+    Record<string, LoanInstallment[]>
+  >({});
   const [selectedClientId, setSelectedClientId] =
     useState<string>(defaultClientId);
 
@@ -82,7 +102,7 @@ export function GlobalPaymentForm({
 
   const watchLoanId = form.watch("loan_id");
 
-  // Watch for client selection to fetch their loans
+  // Watch for client selection to fetch their loans and installments
   useEffect(() => {
     if (selectedClientId) {
       const fetchLoans = async () => {
@@ -99,6 +119,18 @@ export function GlobalPaymentForm({
           const clientLoans = result.data.data;
           setLoans(clientLoans);
 
+          // Fetch installment details for each loan
+          const installmentsMap: Record<string, LoanInstallment[]> = {};
+          await Promise.all(
+            clientLoans.map(async (loan) => {
+              const detail = await getLoanById(loan.id);
+              if (detail.success && detail.data) {
+                installmentsMap[loan.id] = detail.data.installments;
+              }
+            }),
+          );
+          setLoanInstallmentsMap(installmentsMap);
+
           if (clientLoans.length === 1) {
             form.setValue("loan_id", clientLoans[0].id);
           } else {
@@ -110,9 +142,21 @@ export function GlobalPaymentForm({
       fetchLoans();
     } else {
       setLoans([]);
+      setLoanInstallmentsMap({});
       form.setValue("loan_id", "");
     }
   }, [selectedClientId, form]);
+
+  // Auto-populate amount when a loan is selected
+  useEffect(() => {
+    if (watchLoanId && loanInstallmentsMap[watchLoanId]) {
+      const nextInst = getNextInstallment(loanInstallmentsMap[watchLoanId]);
+      if (nextInst) {
+        const remaining = nextInst.total_due - nextInst.amount_paid;
+        form.setValue("amount", remaining);
+      }
+    }
+  }, [watchLoanId, loanInstallmentsMap, form]);
 
   const onSubmit = (values: CreatePaymentFormValues) => {
     startTransition(async () => {
@@ -206,32 +250,49 @@ export function GlobalPaymentForm({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="w-[--radix-select-trigger-width] min-w-[320px] p-1">
-                    {loans.map((loan) => (
-                      <SelectItem
-                        key={loan.id}
-                        value={loan.id}
-                        className="rounded-md focus:bg-primary/5 cursor-pointer py-2.5"
-                      >
-                        <div className="flex flex-col gap-1 items-start">
-                          <span className="font-semibold text-sm">
-                            {formatCurrency(loan.total_amount || loan.capital)}{" "}
-                            Loan
-                          </span>
-                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                            <span>
-                              Balance:{" "}
-                              <span className="text-foreground/90 font-medium">
-                                {formatCurrency(loan.outstanding_balance)}
+                    {loans.map((loan) => {
+                      const installments = loanInstallmentsMap[loan.id];
+                      const nextInst = installments
+                        ? getNextInstallment(installments)
+                        : undefined;
+                      return (
+                        <SelectItem
+                          key={loan.id}
+                          value={loan.id}
+                          className="rounded-md focus:bg-primary/5 cursor-pointer py-2.5"
+                        >
+                          <div className="flex flex-col gap-1 items-start">
+                            <span className="font-semibold text-sm">
+                              {formatCurrency(loan.total_amount || loan.capital)}{" "}
+                              Loan
+                            </span>
+                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                              <span>
+                                Balance:{" "}
+                                <span className="text-foreground/90 font-medium">
+                                  {formatCurrency(loan.outstanding_balance)}
+                                </span>
                               </span>
-                            </span>
-                            <span className="opacity-40">•</span>
-                            <span className="font-mono text-[10px] opacity-70">
-                              #{loan.id.slice(-6).toUpperCase()}
-                            </span>
+                              <span className="opacity-40">•</span>
+                              {nextInst && (
+                                <>
+                                  <span>
+                                    Cuota:{" "}
+                                    <span className="text-foreground/90 font-medium">
+                                      {formatCurrency(nextInst.total_due - nextInst.amount_paid)}
+                                    </span>
+                                  </span>
+                                  <span className="opacity-40">•</span>
+                                </>
+                              )}
+                              <span className="font-mono text-[10px] opacity-70">
+                                #{loan.id.slice(-6).toUpperCase()}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                      </SelectItem>
-                    ))}
+                        </SelectItem>
+                      );
+                    })}
                   </SelectContent>
                 </Select>
                 <FormMessage />

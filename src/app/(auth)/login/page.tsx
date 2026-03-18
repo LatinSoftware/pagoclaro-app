@@ -1,6 +1,13 @@
 import { AuthLayout } from "@/components/auth/auth-layout";
 import { LoginForm } from "@/components/auth/login-form";
+import { Metadata } from "next";
 import { Suspense } from "react";
+
+export const metadata: Metadata = {
+  title: "Iniciar Sesión",
+  description: "Accede a tu cuenta de Pago Claro para gestionar tus préstamos.",
+};
+
 
 export default function LoginPage() {
   return (

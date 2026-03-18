@@ -1,5 +1,12 @@
 import { getDashboardSummary } from "@/actions/dashboard";
 import { KpiCards } from "@/components/dashboard/KpiCards";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "Resumen ejecutivo de préstamos, cobranzas y métricas clave.",
+};
+
 import { CollectionSummary } from "@/components/dashboard/CollectionSummary";
 import { AttentionTable } from "@/components/dashboard/AttentionTable";
 import { CollectionsChart } from "@/components/dashboard/CollectionsChart";
