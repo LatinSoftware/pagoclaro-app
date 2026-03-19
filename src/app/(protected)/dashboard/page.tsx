@@ -4,7 +4,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Dashboard",
-  description: "Resumen ejecutivo de préstamos, cobranzas y métricas clave.",
+  description: "Executive summary of loans, collections, and key metrics.",
 };
 
 import { CollectionSummary } from "@/components/dashboard/CollectionSummary";
@@ -22,7 +22,7 @@ export default async function DashboardPage() {
       <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-4">
         <AlertTriangle size={48} className="text-destructive" />
         <h2 className="text-xl font-semibold text-foreground">
-          Error cargando el dashboard
+          Error loading dashboard
         </h2>
         <p className="text-sm">{result.error}</p>
       </div>
@@ -44,7 +44,7 @@ export default async function DashboardPage() {
       <header>
         <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
         <p className="text-muted-foreground mt-1">
-          Resumen de tu negocio en tiempo real
+          Real-time business summary
         </p>
       </header>
 
@@ -56,7 +56,7 @@ export default async function DashboardPage() {
       {/* Section 2: Collection Summary */}
       <section>
         <h2 className="text-lg font-semibold text-foreground mb-4">
-          Resumen de Cobranza
+          Collection Summary
         </h2>
         <CollectionSummary summary={collectionSummary} />
       </section>

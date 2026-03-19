@@ -14,7 +14,7 @@ interface CollectionSummaryProps {
 const summaryConfig = [
   {
     key: "installmentsDueToday" as const,
-    label: "Cuotas para Hoy",
+    label: "Due Today",
     icon: CalendarClock,
     color: "text-blue-600 dark:text-blue-400",
     bgColor: "bg-blue-50 dark:bg-blue-900/30",
@@ -22,7 +22,7 @@ const summaryConfig = [
   },
   {
     key: "installmentsDueThisWeek" as const,
-    label: "Cuotas esta Semana",
+    label: "Due This Week",
     icon: CalendarDays,
     color: "text-indigo-600 dark:text-indigo-400",
     bgColor: "bg-indigo-50 dark:bg-indigo-900/30",
@@ -30,7 +30,7 @@ const summaryConfig = [
   },
   {
     key: "overdueInstallments" as const,
-    label: "Cuotas Vencidas",
+    label: "Overdue Installments",
     icon: AlertOctagon,
     color: "text-red-600 dark:text-red-400",
     bgColor: "bg-red-50 dark:bg-red-900/30",
@@ -38,7 +38,7 @@ const summaryConfig = [
   },
   {
     key: "loansAtRisk" as const,
-    label: "Préstamos en Riesgo",
+    label: "Loans at Risk",
     icon: ShieldAlert,
     color: "text-orange-600 dark:text-orange-400",
     bgColor: "bg-orange-50 dark:bg-orange-900/30",

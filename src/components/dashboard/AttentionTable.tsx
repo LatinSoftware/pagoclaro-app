@@ -7,9 +7,9 @@ interface AttentionTableProps {
 }
 
 function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("es-DO", {
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "DOP",
+    currency: "USD",
     minimumFractionDigits: 2,
   }).format(amount);
 }
@@ -24,9 +24,9 @@ function getStatusBadge(status: string) {
   };
 
   const labels: Record<string, string> = {
-    overdue: "Vencida",
-    partial: "Parcial",
-    pending: "Pendiente",
+    overdue: "Overdue",
+    partial: "Partial",
+    pending: "Pending",
   };
 
   return (
@@ -45,13 +45,13 @@ export function AttentionTable({ items }: AttentionTableProps) {
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <AlertTriangle size={18} className="text-amber-500" />
-            Requiere Atención
+            Requires Attention
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8 text-muted-foreground">
             <p className="text-sm">
-              🎉 No hay cuotas que requieran atención inmediata.
+              🎉 No installments require immediate attention.
             </p>
           </div>
         </CardContent>
@@ -64,9 +64,9 @@ export function AttentionTable({ items }: AttentionTableProps) {
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
           <AlertTriangle size={18} className="text-amber-500" />
-          Requiere Atención
+          Requires Attention
           <span className="ml-auto text-xs font-normal text-muted-foreground">
-            Ordenado por prioridad
+            Sorted by priority
           </span>
         </CardTitle>
       </CardHeader>
@@ -76,22 +76,22 @@ export function AttentionTable({ items }: AttentionTableProps) {
             <thead>
               <tr className="border-b bg-muted/50">
                 <th className="text-left px-4 py-3 font-semibold text-muted-foreground">
-                  Cliente
+                  Client
                 </th>
                 <th className="text-left px-4 py-3 font-semibold text-muted-foreground hidden md:table-cell">
-                  Teléfono
+                  Phone
                 </th>
                 <th className="text-left px-4 py-3 font-semibold text-muted-foreground">
-                  Próxima Cuota
+                  Next Due Date
                 </th>
                 <th className="text-right px-4 py-3 font-semibold text-muted-foreground">
-                  Monto
+                  Amount
                 </th>
                 <th className="text-center px-4 py-3 font-semibold text-muted-foreground">
-                  Estado
+                  Status
                 </th>
                 <th className="text-center px-4 py-3 font-semibold text-muted-foreground">
-                  Días Atraso
+                  Days Overdue
                 </th>
               </tr>
             </thead>
@@ -108,7 +108,7 @@ export function AttentionTable({ items }: AttentionTableProps) {
                     {item.clientPhone}
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
-                    {new Date(item.nextDueDate).toLocaleDateString("es-DO", {
+                    {new Date(item.nextDueDate).toLocaleDateString("en-US", {
                       day: "2-digit",
                       month: "short",
                     })}
@@ -121,7 +121,7 @@ export function AttentionTable({ items }: AttentionTableProps) {
                   </td>
                   <td className="px-4 py-3 text-center">
                     <span
-                      className={`inline-flex items-center justify-center min-w-[2rem] px-2 py-0.5 rounded-full text-xs font-bold ${
+                      className={`inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-full text-xs font-bold ${
                         item.daysOverdue > 7
                           ? "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400"
                           : item.daysOverdue > 3

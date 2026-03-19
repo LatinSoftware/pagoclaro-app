@@ -7,9 +7,9 @@ interface UpcomingInstallmentsProps {
 }
 
 function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("es-DO", {
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "DOP",
+    currency: "USD",
     minimumFractionDigits: 2,
   }).format(amount);
 }
@@ -23,8 +23,8 @@ function getStatusBadge(status: string) {
   };
 
   const labels: Record<string, string> = {
-    pending: "Pendiente",
-    partial: "Parcial",
+    pending: "Pending",
+    partial: "Partial",
   };
 
   return (
@@ -45,12 +45,12 @@ export function UpcomingInstallments({
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <CalendarClock size={18} className="text-primary" />
-            Próximos Vencimientos
+            Upcoming Installments
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8 text-muted-foreground">
-            <p className="text-sm">No hay vencimientos próximos.</p>
+            <p className="text-sm">No upcoming installments.</p>
           </div>
         </CardContent>
       </Card>
@@ -62,7 +62,7 @@ export function UpcomingInstallments({
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
           <CalendarClock size={18} className="text-primary" />
-          Próximos Vencimientos
+          Upcoming Installments
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
@@ -71,19 +71,19 @@ export function UpcomingInstallments({
             <thead>
               <tr className="border-b bg-muted/50">
                 <th className="text-left px-4 py-3 font-semibold text-muted-foreground">
-                  Cliente
+                  Client
                 </th>
                 <th className="text-left px-4 py-3 font-semibold text-muted-foreground">
-                  Fecha
+                  Date
                 </th>
                 <th className="text-right px-4 py-3 font-semibold text-muted-foreground">
-                  Monto
+                  Amount
                 </th>
                 <th className="text-left px-4 py-3 font-semibold text-muted-foreground hidden md:table-cell">
-                  Teléfono
+                  Phone
                 </th>
                 <th className="text-center px-4 py-3 font-semibold text-muted-foreground">
-                  Estado
+                  Status
                 </th>
               </tr>
             </thead>
@@ -97,7 +97,7 @@ export function UpcomingInstallments({
                     {item.clientName}
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
-                    {new Date(item.dueDate).toLocaleDateString("es-DO", {
+                    {new Date(item.dueDate).toLocaleDateString("en-US", {
                       day: "2-digit",
                       month: "short",
                       year: "numeric",

@@ -14,9 +14,9 @@ interface KpiCardsProps {
 }
 
 function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("es-DO", {
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "DOP",
+    currency: "USD",
     minimumFractionDigits: 2,
   }).format(amount);
 }
@@ -24,7 +24,7 @@ function formatCurrency(amount: number): string {
 const kpiConfig = [
   {
     key: "activeCapital" as const,
-    label: "Capital Prestado",
+    label: "Active Capital",
     icon: DollarSign,
     color: "text-blue-600 dark:text-blue-400",
     bgColor: "bg-blue-100 dark:bg-blue-900/40",
@@ -32,7 +32,7 @@ const kpiConfig = [
   },
   {
     key: "totalCollected" as const,
-    label: "Total Cobrado",
+    label: "Total Collected",
     icon: TrendingUp,
     color: "text-emerald-600 dark:text-emerald-400",
     bgColor: "bg-emerald-100 dark:bg-emerald-900/40",
@@ -40,7 +40,7 @@ const kpiConfig = [
   },
   {
     key: "pendingBalance" as const,
-    label: "Balance Pendiente",
+    label: "Pending Balance",
     icon: Clock,
     color: "text-amber-600 dark:text-amber-400",
     bgColor: "bg-amber-100 dark:bg-amber-900/40",
@@ -48,7 +48,7 @@ const kpiConfig = [
   },
   {
     key: "overdueAmount" as const,
-    label: "Monto en Mora",
+    label: "Overdue Amount",
     icon: AlertTriangle,
     color: "text-red-600 dark:text-red-400",
     bgColor: "bg-red-100 dark:bg-red-900/40",
@@ -56,7 +56,7 @@ const kpiConfig = [
   },
   {
     key: "todayCollections" as const,
-    label: "Cobros de Hoy",
+    label: "Today's Collections",
     icon: CalendarCheck,
     color: "text-primary",
     bgColor: "bg-primary/10",
@@ -64,7 +64,7 @@ const kpiConfig = [
   },
   {
     key: "activeClients" as const,
-    label: "Clientes Activos",
+    label: "Active Clients",
     icon: Users,
     color: "text-violet-600 dark:text-violet-400",
     bgColor: "bg-violet-100 dark:bg-violet-900/40",

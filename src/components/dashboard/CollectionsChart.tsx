@@ -18,9 +18,9 @@ interface CollectionsChartProps {
 }
 
 function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("es-DO", {
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "DOP",
+    currency: "USD",
     minimumFractionDigits: 0,
   }).format(amount);
 }
@@ -38,7 +38,7 @@ function CustomTooltip({
     return (
       <div className="bg-card border rounded-lg shadow-lg px-3 py-2">
         <p className="text-xs text-muted-foreground">
-          {new Date(label ?? "").toLocaleDateString("es-DO", {
+          {new Date(label ?? "").toLocaleDateString("en-US", {
             weekday: "short",
             day: "2-digit",
             month: "short",
@@ -62,7 +62,7 @@ export function CollectionsChart({ data }: CollectionsChartProps) {
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg flex items-center gap-2">
             <TrendingUp size={18} className="text-primary" />
-            Cobros Últimos 30 Días
+            Collections Last 30 Days
           </CardTitle>
           <span className="text-sm font-bold text-primary">
             {formatCurrency(total)}

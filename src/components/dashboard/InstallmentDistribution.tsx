@@ -6,7 +6,6 @@ import {
   Cell,
   ResponsiveContainer,
   Tooltip,
-  Legend,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChart as PieIcon } from "lucide-react";
@@ -19,22 +18,22 @@ interface InstallmentDistributionProps {
 const statusConfig = [
   {
     key: "pending" as const,
-    label: "Pendientes",
+    label: "Pending",
     color: "#94a3b8", // slate-400
   },
   {
     key: "partial" as const,
-    label: "Parciales",
+    label: "Partial",
     color: "#f59e0b", // amber-500
   },
   {
     key: "paid" as const,
-    label: "Pagadas",
+    label: "Paid",
     color: "#10b981", // emerald-500
   },
   {
     key: "overdue" as const,
-    label: "Vencidas",
+    label: "Overdue",
     color: "#ef4444", // red-500
   },
 ];
@@ -85,13 +84,13 @@ export function InstallmentDistribution({
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center gap-2">
           <PieIcon size={18} className="text-primary" />
-          Estado de Cuotas
+          Installment Status
         </CardTitle>
       </CardHeader>
       <CardContent>
         {total === 0 ? (
           <div className="text-center py-8 text-muted-foreground text-sm">
-            No hay cuotas registradas
+            No installments registered
           </div>
         ) : (
           <div className="flex flex-col md:flex-row items-center gap-4">
