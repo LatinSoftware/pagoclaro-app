@@ -2,6 +2,8 @@ import { getDashboardSummary } from "@/actions/dashboard";
 import { KpiCards } from "@/components/dashboard/KpiCards";
 import { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Dashboard",
   description: "Executive summary of loans, collections, and key metrics.",

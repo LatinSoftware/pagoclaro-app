@@ -19,8 +19,8 @@ export function Pagination({ meta, itemLabel = "items" }: PaginationProps) {
   const [isPending, startTransition] = useTransition();
 
   const page = Number(meta.page) || 1;
-  const totalPages = Number(meta.totalPages) || 1;
-  const total = Number(meta.total) || 0;
+  const totalPages = Number(meta.total_pages) || 1;
+  const total = Number(meta.total_records) || 0;
   const limit = Number(meta.limit) || 10;
 
   if (totalPages <= 1) return null;
