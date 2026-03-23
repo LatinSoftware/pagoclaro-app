@@ -62,12 +62,12 @@ export default function CreateClientWizard() {
         submitFormData.append("name", finalData.basicInfo.fullName);
         submitFormData.append("cedula", finalData.basicInfo.cedula);
         submitFormData.append("phone", finalData.basicInfo.phone);
-        submitFormData.append("address", finalData.geolocation.address || finalData.basicInfo.address);
+        submitFormData.append("address", finalData.geolocation.address);
         
-        if (finalData.geolocation.latitude) {
+        if (finalData.geolocation.latitude !== null) {
             submitFormData.append("latitude", finalData.geolocation.latitude.toString());
         }
-        if (finalData.geolocation.longitude) {
+        if (finalData.geolocation.longitude !== null) {
             submitFormData.append("longitude", finalData.geolocation.longitude.toString());
         }
 
@@ -114,12 +114,12 @@ export default function CreateClientWizard() {
           <CardTitle>
             {step === 1 && "Personal Details"}
             {step === 2 && "Upload ID Documents"}
-            {step === 3 && "Geolocation Capture"}
+            {step === 3 && "Location and Address"}
           </CardTitle>
           <CardDescription>
             {step === 1 && "Please enter the client's legal information."}
             {step === 2 && "Ensure ID is well-lit and text is readable."}
-            {step === 3 && "Verified location data helps in accurate service delivery."}
+            {step === 3 && "Select the point on the map and confirm the final address."}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -132,22 +132,30 @@ export default function CreateClientWizard() {
             <ClientBasicInfoStep 
               defaultValues={formData.basicInfo} 
               onNext={handleBasicInfoSubmit} 
-              onBack={() => router.push("/clients")}
+              onBack={(data) => {
+                if (data) setFormData(prev => ({ ...prev, basicInfo: data as ClientBasicInfo }));
+                router.push("/clients");
+              }}
             />
           )}
           {step === 2 && (
             <ClientDocumentUploadStep 
               defaultValues={formData.documents}
               onNext={handleDocumentsSubmit}
-              onBack={() => setStep(1)}
+              onBack={(data) => {
+                if (data) setFormData(prev => ({ ...prev, documents: data as ClientDocuments }));
+                setStep(1);
+              }}
             />
           )}
           {step === 3 && (
             <ClientGeolocationStep 
               defaultValues={formData.geolocation}
-              basicInfoAddress={formData.basicInfo?.address}
               onSubmit={handleGeolocationSubmit}
-              onBack={() => setStep(2)}
+              onBack={(data) => {
+                if (data) setFormData(prev => ({ ...prev, geolocation: data as ClientGeolocation }));
+                setStep(2);
+              }}
               isSubmitting={isSubmitting}
             />
           )}

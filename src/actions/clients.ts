@@ -7,20 +7,24 @@ import { ClientProfile } from "@/types/client";
 import { cache } from "react";
 
 export async function createClientAction(
-  formData: FormData,
+  data: FormData,
 ): Promise<{ success: boolean; error?: string }> {
   try {
     // The api service handles the token when called from the server
-    await api.post("/clients", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+    const multipartFormData = new FormData();
+
+    data.forEach((value, key) => {
+      multipartFormData.append(key, value);
     });
+
+    await api.post("/clients", multipartFormData);
 
     revalidatePath("/clients");
     return { success: true };
   } catch (error: unknown) {
-    return handleApiError(error, "createClientAction");
+    const handledError = handleApiError(error, "createClientAction");
+    console.log(handledError);
+    return handledError;
   }
 }
 
@@ -88,5 +92,51 @@ export async function getClientsListAction(params: {
     return { success: true, data };
   } catch (error: unknown) {
     return handleApiError(error, "getClientsListAction");
+  }
+}
+
+export async function reverseGeocodeAction(
+  latitude: number,
+  longitude: number,
+): Promise<{ success: boolean; address?: string | null; error?: string }> {
+  try {
+    const data = await api.get<{ address: string | null }>(
+      "/clients/reverse-geocode",
+      {
+        params: { latitude, longitude },
+      },
+    );
+    return { success: true, address: data.address };
+  } catch (error: unknown) {
+    return handleApiError(error, "reverseGeocodeAction");
+  }
+}
+
+export async function geocodeSearchAction(
+  query: string,
+  limit = 5,
+): Promise<{
+  success: boolean;
+  results?: Array<{
+    label: string;
+    latitude: number;
+    longitude: number;
+  }>;
+  error?: string;
+}> {
+  try {
+    const data = await api.get<{
+      results: Array<{
+        label: string;
+        latitude: number;
+        longitude: number;
+      }>;
+    }>("/clients/geocode-search", {
+      params: { query, limit },
+    });
+
+    return { success: true, results: data.results };
+  } catch (error: unknown) {
+    return handleApiError(error, "geocodeSearchAction");
   }
 }

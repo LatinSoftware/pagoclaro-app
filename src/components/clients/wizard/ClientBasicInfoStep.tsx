@@ -10,13 +10,14 @@ import { ClientBasicInfo, clientBasicInfoSchema } from "@/lib/schemas/client-wiz
 interface ClientBasicInfoStepProps {
   defaultValues?: Partial<ClientBasicInfo>;
   onNext: (data: ClientBasicInfo) => void;
-  onBack: () => void;
+  onBack: (data?: Partial<ClientBasicInfo>) => void;
 }
 
 export default function ClientBasicInfoStep({ defaultValues, onNext, onBack }: ClientBasicInfoStepProps) {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<ClientBasicInfo>({
     resolver: zodResolver(clientBasicInfoSchema),
@@ -24,7 +25,6 @@ export default function ClientBasicInfoStep({ defaultValues, onNext, onBack }: C
       fullName: "",
       cedula: "",
       phone: "",
-      address: "",
     },
   });
 
@@ -69,21 +69,8 @@ export default function ClientBasicInfoStep({ defaultValues, onNext, onBack }: C
         )}
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="address">Residential Address</Label>
-        <Input
-          id="address"
-          placeholder="Enter street, city, state and zip"
-          {...register("address")}
-          className={errors.address ? "border-red-500" : ""}
-        />
-        {errors.address && (
-          <p className="text-sm text-red-500">{errors.address.message}</p>
-        )}
-      </div>
-
       <div className="flex justify-between">
-        <Button type="button" variant="outline" onClick={onBack}>
+        <Button type="button" variant="outline" onClick={() => onBack(getValues())}>
           Back to List
         </Button>
         <Button type="submit" size="lg">

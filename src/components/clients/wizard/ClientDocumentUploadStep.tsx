@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import Image from "next/image";
 interface ClientDocumentUploadStepProps {
   defaultValues?: Partial<ClientDocuments>;
   onNext: (data: ClientDocuments) => void;
-  onBack: () => void;
+  onBack: (data?: Partial<ClientDocuments>) => void;
 }
 
 export default function ClientDocumentUploadStep({ defaultValues, onNext, onBack }: ClientDocumentUploadStepProps) {
@@ -26,13 +26,24 @@ export default function ClientDocumentUploadStep({ defaultValues, onNext, onBack
   const {
     handleSubmit,
     setValue,
+    getValues,
+    register,
     formState: { errors },
   } = useForm<ClientDocuments>({
     resolver: zodResolver(clientDocumentSchema),
     defaultValues: defaultValues,
   });
 
-
+  useEffect(() => {
+    if (defaultValues?.frontId instanceof File) {
+      setFrontPreview(URL.createObjectURL(defaultValues.frontId));
+    }
+    if (defaultValues?.backId instanceof File) {
+      setBackPreview(URL.createObjectURL(defaultValues.backId));
+    }
+    register("frontId");
+    register("backId");
+  }, [defaultValues, register]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: "frontId" | "backId") => {
     const file = e.target.files?.[0];
@@ -101,7 +112,7 @@ export default function ClientDocumentUploadStep({ defaultValues, onNext, onBack
                   size="icon"
                   className="absolute top-2 right-2 h-8 w-8"
                   onClick={() => {
-                    setValue("frontId", undefined as unknown);
+                    setValue("frontId", undefined as unknown as File);
                     setFrontPreview(null);
                   }}
                 >
@@ -148,7 +159,7 @@ export default function ClientDocumentUploadStep({ defaultValues, onNext, onBack
                   size="icon"
                   className="absolute top-2 right-2 h-8 w-8"
                   onClick={() => {
-                    setValue("backId", undefined as unknown);
+                    setValue("backId", undefined as unknown as File);
                     setBackPreview(null);
                   }}
                 >
@@ -179,7 +190,7 @@ export default function ClientDocumentUploadStep({ defaultValues, onNext, onBack
       </div>
 
       <div className="flex justify-between pt-4">
-        <Button type="button" variant="outline" onClick={onBack}>
+        <Button type="button" variant="outline" onClick={() => onBack(getValues())}>
           Back
         </Button>
         <Button type="submit" size="lg" disabled={isMerging}>
