@@ -229,7 +229,7 @@ export default function Home() {
             </Link>
             <Link
               href="#contact"
-              className="rounded-xl bg-linear-to-r from-teal-500 to-emerald-500 px-4 py-2 text-sm font-bold text-slate-950 transition-all hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(20,184,166,0.4)] sm:px-5 sm:py-2.5 sm:text-base"
+              className="hidden items-center rounded-xl bg-linear-to-r from-teal-500 to-emerald-500 px-4 py-2 text-sm font-bold text-slate-950 transition-all hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(20,184,166,0.4)] md:flex sm:px-5 sm:py-2.5 sm:text-base"
             >
               Solicitar demo
             </Link>
@@ -262,9 +262,16 @@ export default function Home() {
               ))}
               <div className="my-2 h-px w-full bg-white/10" />
               <Link
+                href="#contact"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="rounded-xl bg-linear-to-r from-teal-500 to-emerald-500 px-4 py-3 text-center text-base font-bold text-slate-950 transition-all"
+              >
+                Solicitar demo
+              </Link>
+              <Link
                 href="/login"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="text-base font-semibold text-teal-300 transition-colors hover:text-teal-400"
+                className="rounded-xl border border-teal-500/20 bg-teal-950/30 px-4 py-3 text-center text-base font-semibold text-teal-300 transition-colors hover:text-teal-400"
               >
                 Iniciar sesion
               </Link>
