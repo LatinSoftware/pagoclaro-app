@@ -1,4 +1,17 @@
 export type ClientStatus = "active" | "inactive";
+export type Gender = "male" | "female" | "other" | "prefer_not_to_say";
+export type MaritalStatus =
+  | "single"
+  | "married"
+  | "union"
+  | "divorced"
+  | "widowed";
+export type IncomeSource =
+  | "employed"
+  | "independent"
+  | "business_owner"
+  | "informal"
+  | "other";
 
 export interface Client {
   id: string;
@@ -14,14 +27,27 @@ export interface Client {
   createdAt: string;
   updatedAt: string;
   pendingBalance?: number;
-  // Financial info (suggested by design)
-  totalRevenue?: number;
-  outstandingBalance?: number;
   lastPaymentDate?: string;
-  email?: string;
-  memberSince?: string;
-  accountManager?: string;
-  creditLimit?: number;
+  // Contact
+  email?: string | null;
+  secondary_phone?: string | null;
+  // Personal
+  birth_date?: string | null;
+  gender?: Gender | null;
+  marital_status?: MaritalStatus | null;
+  // Financial
+  occupation?: string | null;
+  company_name?: string | null;
+  monthly_income?: number | null;
+  income_source?: IncomeSource | null;
+  // Reference
+  reference_name?: string | null;
+  reference_phone?: string | null;
+  reference_relationship?: string | null;
+  // Internal metadata
+  notes?: string | null;
+  is_blacklisted?: boolean;
+  blacklist_reason?: string | null;
 }
 
 export type FinancialStatus = "AL_DIA" | "PARCIAL" | "EN_MORA";
