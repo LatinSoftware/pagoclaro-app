@@ -140,7 +140,9 @@ export default function ClientGeolocationStep({
       return;
     }
 
-    setValue("latitude", selectedCoordinates.latitude, { shouldValidate: true });
+    setValue("latitude", selectedCoordinates.latitude, {
+      shouldValidate: true,
+    });
     setValue("longitude", selectedCoordinates.longitude, {
       shouldValidate: true,
     });
@@ -226,9 +228,8 @@ export default function ClientGeolocationStep({
               Select the exact location
             </h3>
             <p className="text-sm text-muted-foreground">
-              Search your address or pick the point manually on the map. We
-              will use that point to fill the coordinates and suggest the
-              address.
+              Search your address or pick the point manually on the map. We will
+              use that point to fill the coordinates and suggest the address.
             </p>
           </div>
 
@@ -403,9 +404,7 @@ export default function ClientGeolocationStep({
           </p>
         )}
 
-        {lookupError && (
-          <p className="text-xs text-amber-600">{lookupError}</p>
-        )}
+        {lookupError && <p className="text-xs text-amber-600">{lookupError}</p>}
 
         <p className="text-xs text-muted-foreground">
           You can always edit the address manually, even if reverse geocoding
@@ -417,11 +416,21 @@ export default function ClientGeolocationStep({
         )}
       </div>
 
-      <div className="flex justify-between pt-4">
-        <Button type="button" variant="outline" onClick={() => onBack(getValues())}>
+      <div className="flex flex-col-reverse md:flex-row justify-between pt-4 gap-4 mt-8">
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full md:w-auto"
+          onClick={() => onBack(getValues())}
+        >
           Back
         </Button>
-        <Button type="submit" size="lg" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full md:w-auto"
+          disabled={isSubmitting}
+        >
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -3,16 +3,18 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ClientBasicInfo, ClientDocuments, ClientGeolocation } from "@/lib/schemas/client-wizard";
+import { ClientBasicInfo, ClientFinancialInfo, ClientReferences, ClientDocuments, ClientGeolocation } from "@/lib/schemas/client-wizard";
 
   // Placeholder components for steps (will be implemented next)
 import ClientBasicInfoStep from "./wizard/ClientBasicInfoStep";
+import ClientFinancialInfoStep from "./wizard/ClientFinancialInfoStep";
+import ClientReferencesStep from "./wizard/ClientReferencesStep";
 import ClientDocumentUploadStep from "./wizard/ClientDocumentUploadStep";
 import ClientGeolocationStep from "./wizard/ClientGeolocationStep";
 import { mergeIdImages } from "@/lib/utils/image-merger";
 import { createClientAction } from "@/actions/clients";
 
-type Step = 1 | 2 | 3;
+type Step = 1 | 2 | 3 | 4 | 5;
 
 export default function CreateClientWizard() {
   const router = useRouter();
@@ -21,6 +23,8 @@ export default function CreateClientWizard() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [formData, setFormData] = useState<{
     basicInfo?: ClientBasicInfo;
+    financialInfo?: ClientFinancialInfo;
+    references?: ClientReferences;
     documents?: ClientDocuments;
     geolocation?: ClientGeolocation;
   }>({});
@@ -30,9 +34,19 @@ export default function CreateClientWizard() {
     setStep(2);
   };
 
+  const handleFinancialInfoSubmit = (data: ClientFinancialInfo) => {
+    setFormData((prev) => ({ ...prev, financialInfo: data }));
+    setStep(3);
+  };
+
+  const handleReferencesSubmit = (data: ClientReferences) => {
+    setFormData((prev) => ({ ...prev, references: data }));
+    setStep(4);
+  };
+
   const handleDocumentsSubmit = (data: ClientDocuments) => {
     setFormData((prev) => ({ ...prev, documents: data }));
-    setStep(3);
+    setStep(5);
   };
 
   const handleGeolocationSubmit = async (data: ClientGeolocation) => {
@@ -42,7 +56,7 @@ export default function CreateClientWizard() {
     };
     
     // Validate we have all data
-    if (!finalData.basicInfo || !finalData.documents) {
+    if (!finalData.basicInfo || !finalData.financialInfo || !finalData.references || !finalData.documents) {
         setSubmitError("Missing required data. Please go back and complete all steps.");
         return;
     }
@@ -62,6 +76,25 @@ export default function CreateClientWizard() {
         submitFormData.append("name", finalData.basicInfo.fullName);
         submitFormData.append("cedula", finalData.basicInfo.cedula);
         submitFormData.append("phone", finalData.basicInfo.phone);
+        
+        // Append optional basic info
+        if (finalData.basicInfo.email) submitFormData.append("email", finalData.basicInfo.email);
+        if (finalData.basicInfo.secondaryPhone) submitFormData.append("secondary_phone", finalData.basicInfo.secondaryPhone);
+        if (finalData.basicInfo.birthDate) submitFormData.append("birth_date", finalData.basicInfo.birthDate);
+        if (finalData.basicInfo.gender) submitFormData.append("gender", finalData.basicInfo.gender);
+        if (finalData.basicInfo.maritalStatus) submitFormData.append("marital_status", finalData.basicInfo.maritalStatus);
+
+        // Append optional financial info
+        if (finalData.financialInfo?.occupation) submitFormData.append("occupation", finalData.financialInfo.occupation);
+        if (finalData.financialInfo?.companyName) submitFormData.append("company_name", finalData.financialInfo.companyName);
+        if (finalData.financialInfo?.monthlyIncome) submitFormData.append("monthly_income", finalData.financialInfo.monthlyIncome.toString());
+        if (finalData.financialInfo?.incomeSource) submitFormData.append("income_source", finalData.financialInfo.incomeSource);
+
+        // Append optional references
+        if (finalData.references?.referenceName) submitFormData.append("reference_name", finalData.references.referenceName);
+        if (finalData.references?.referencePhone) submitFormData.append("reference_phone", finalData.references.referencePhone);
+        if (finalData.references?.referenceRelationship) submitFormData.append("reference_relationship", finalData.references.referenceRelationship);
+
         submitFormData.append("address", finalData.geolocation.address);
         
         if (finalData.geolocation.latitude !== null) {
@@ -99,12 +132,12 @@ export default function CreateClientWizard() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Create New Client</h1>
         <p className="text-muted-foreground mt-2">
-          Step {step} of 3
+          Step {step} of 5
         </p>
         <div className="w-full bg-secondary h-2 mt-4 rounded-full overflow-hidden">
           <div 
             className="bg-primary h-full transition-all duration-300 ease-in-out" 
-            style={{ width: `${(step / 3) * 100}%` }}
+            style={{ width: `${(step / 5) * 100}%` }}
           />
         </div>
       </div>
@@ -113,13 +146,17 @@ export default function CreateClientWizard() {
         <CardHeader>
           <CardTitle>
             {step === 1 && "Personal Details"}
-            {step === 2 && "Upload ID Documents"}
-            {step === 3 && "Location and Address"}
+            {step === 2 && "Financial Information"}
+            {step === 3 && "References"}
+            {step === 4 && "Upload ID Documents"}
+            {step === 5 && "Location and Address"}
           </CardTitle>
           <CardDescription>
             {step === 1 && "Please enter the client's legal information."}
-            {step === 2 && "Ensure ID is well-lit and text is readable."}
-            {step === 3 && "Select the point on the map and confirm the final address."}
+            {step === 2 && "Enter the client's occupation and income source."}
+            {step === 3 && "Provide contact information for a personal or family reference."}
+            {step === 4 && "Ensure ID is well-lit and text is readable."}
+            {step === 5 && "Select the point on the map and confirm the final address."}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -139,22 +176,42 @@ export default function CreateClientWizard() {
             />
           )}
           {step === 2 && (
-            <ClientDocumentUploadStep 
-              defaultValues={formData.documents}
-              onNext={handleDocumentsSubmit}
+            <ClientFinancialInfoStep 
+              defaultValues={formData.financialInfo}
+              onNext={handleFinancialInfoSubmit}
               onBack={(data) => {
-                if (data) setFormData(prev => ({ ...prev, documents: data as ClientDocuments }));
+                if (data) setFormData(prev => ({ ...prev, financialInfo: data as ClientFinancialInfo }));
                 setStep(1);
               }}
             />
           )}
           {step === 3 && (
+            <ClientReferencesStep 
+              defaultValues={formData.references}
+              onNext={handleReferencesSubmit}
+              onBack={(data) => {
+                if (data) setFormData(prev => ({ ...prev, references: data as ClientReferences }));
+                setStep(2);
+              }}
+            />
+          )}
+          {step === 4 && (
+            <ClientDocumentUploadStep 
+              defaultValues={formData.documents}
+              onNext={handleDocumentsSubmit}
+              onBack={(data) => {
+                if (data) setFormData(prev => ({ ...prev, documents: data as ClientDocuments }));
+                setStep(3);
+              }}
+            />
+          )}
+          {step === 5 && (
             <ClientGeolocationStep 
               defaultValues={formData.geolocation}
               onSubmit={handleGeolocationSubmit}
               onBack={(data) => {
                 if (data) setFormData(prev => ({ ...prev, geolocation: data as ClientGeolocation }));
-                setStep(2);
+                setStep(4);
               }}
               isSubmitting={isSubmitting}
             />
